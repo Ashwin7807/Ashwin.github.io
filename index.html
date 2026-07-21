@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashwin G — Cybersecurity Analyst in Training</title>
+<meta name="description" content="Portfolio of Ashwin G — Computer Science student focused on cybersecurity.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== BOOT / CLEARANCE SEQUENCE ===================== -->
+<div id="boot-screen" aria-hidden="true">
+  <div class="boot-inner">
+    <p class="boot-line" data-text="INITIALIZING SECURE PROFILE ..."></p>
+    <p class="boot-line" data-text="VERIFYING CREDENTIALS ..."></p>
+    <p class="boot-line boot-grant" data-text="ACCESS GRANTED — WELCOME"></p>
+    <div class="boot-bar"><span></span></div>
+  </div>
+</div>
+
+<!-- ===================== AMBIENT BACKGROUND ===================== -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<canvas id="cursor-canvas" aria-hidden="true"></canvas>
+
+<!-- ===================== NAV ===================== -->
+<header class="site-nav">
+  <a href="#top" class="brand">ASH<span>WIN</span></a>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#focus">Focus</a>
+    <a href="#projects">Projects</a>
+    <a href="#education">Education</a>
+    <a href="#resume">Resume</a>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="top" class="hero">
+    <div id="shield-stage"></div>
+
+    <div class="hero-content">
+      <p class="eyebrow">// Case File: 001</p>
+      <h1 class="hero-name">Ashwin<span class="dot">.</span></h1>
+
+      <div class="rolling-text" id="rolling-text" aria-live="polite">
+        <span class="rolling-line is-active">Computer Science Student</span>
+        <span class="rolling-line">Cybersecurity Analyst in Training</span>
+        <span class="rolling-line">Building. Breaking. Defending.</span>
+        <span class="rolling-line">Always Learning, Always Logging</span>
+      </div>
+
+      <p class="hero-sub">Studying the systems worth protecting — one vulnerability, one write-up, one late night at a time.</p>
+
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-solid">Get in touch</a>
+        <a href="#resume" class="btn btn-ghost">View resume</a>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true"><span></span>Scroll</div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" class="section about-section">
+    <div class="section-head">
+      <p class="eyebrow">// 01 — Subject Profile</p>
+      <h2>About</h2>
+    </div>
+
+    <div class="about-grid">
+      <!-- Rotatable / flippable photo card -->
+      <div class="id-card-wrap">
+        <div class="id-card" id="id-card" tabindex="0" role="button" aria-label="Flip photo card">
+          <div class="id-card-inner">
+            <div class="id-card-face id-card-front">
+              <div class="frame-corner tl"></div>
+              <div class="frame-corner tr"></div>
+              <div class="frame-corner bl"></div>
+              <div class="frame-corner br"></div>
+              <img src="assets/ashwin.jpg" alt="Ashwin G">
+              <div class="id-card-label">
+                <span class="id-label-name">ASHWIN&nbsp;G</span>
+                <span class="id-label-role">CYBERSECURITY ANALYST — TRAINEE</span>
+              </div>
+              <p class="flip-hint">click / tap to flip ↻</p>
+            </div>
+
+            <div class="id-card-face id-card-back">
+              <div class="frame-corner tl"></div>
+              <div class="frame-corner tr"></div>
+              <div class="frame-corner bl"></div>
+              <div class="frame-corner br"></div>
+              <p class="back-eyebrow">FIELD NOTE</p>
+              <p class="back-note">"The strongest firewall is curiosity paired with patience. Keep logging the small wins."</p>
+
+              <div class="cat-greeter">
+                <div class="cat-bubble" id="cat-greeting">Loading greeting…</div>
+                <svg class="cat-sticker" viewBox="0 0 100 100" width="64" height="64" aria-hidden="true">
+                  <ellipse cx="50" cy="62" rx="30" ry="24" fill="#3a2e22"/>
+                  <path d="M22 46 L30 20 L42 44 Z" fill="#3a2e22"/>
+                  <path d="M78 46 L70 20 L58 44 Z" fill="#3a2e22"/>
+                  <path d="M26 40 L31 26 L38 40 Z" fill="#c97c3d"/>
+                  <path d="M74 40 L69 26 L62 40 Z" fill="#c97c3d"/>
+                  <ellipse cx="50" cy="60" rx="26" ry="20" fill="#e7d9c4"/>
+                  <circle cx="40" cy="58" r="4" fill="#1c1610"/>
+                  <circle cx="60" cy="58" r="4" fill="#1c1610"/>
+                  <path d="M46 66 Q50 70 54 66" stroke="#1c1610" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  <path d="M30 64 L14 60 M30 68 L14 68 M30 72 L15 76" stroke="#1c1610" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <path d="M70 64 L86 60 M70 68 L86 68 M70 72 L85 76" stroke="#1c1610" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p class="flip-hint">click / tap to flip back ↻</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-copy">
+        <p class="lede">I'm a Computer Science student with a growing focus on cybersecurity — still early in the journey, but a dedicated one.</p>
+        <p>I treat every course project, CTF write-up, and broken lab environment as training ground: a place to learn how systems get attacked, and more importantly, how they get defended. I'm not chasing a finished resume — I'm building one, deliberately, skill by skill.</p>
+        <p>Right now that means going deep on networking fundamentals, Linux, and the mechanics behind common vulnerability classes, while getting comfortable with the tools analysts actually use day to day.</p>
+
+        <ul class="about-meta">
+          <li><span>Status</span>B.Sc. Computer Science — in progress</li>
+          <li><span>Track</span>Cybersecurity Analyst (training)</li>
+          <li><span>Based in</span>Tamil Nadu, India</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOCUS AREAS (Skills placeholder-friendly) ===================== -->
+  <section id="focus" class="section focus-section">
+    <div class="section-head">
+      <p class="eyebrow">// 02 — Focus Areas</p>
+      <h2>What I'm building toward</h2>
+      <p class="section-note">A living list, not a finished skillset — updated as I actually earn each line.</p>
+    </div>
+
+    <div class="focus-grid">
+      <div class="focus-card"><span class="focus-tag">Foundations</span><h3>Networking &amp; Protocols</h3><p>TCP/IP, DNS, HTTP(S) — how data actually moves, so I can spot when it moves wrong.</p></div>
+      <div class="focus-card"><span class="focus-tag">Foundations</span><h3>Linux &amp; the Command Line</h3><p>Comfortable in a terminal, learning to be dangerous in one.</p></div>
+      <div class="focus-card"><span class="focus-tag">In progress</span><h3>Web App Security</h3><p>Working through the OWASP Top 10, one vulnerability class at a time.</p></div>
+      <div class="focus-card"><span class="focus-tag">In progress</span><h3>Python Scripting</h3><p>Automating the boring parts and building small security tools of my own.</p></div>
+      <div class="focus-card"><span class="focus-tag">Next up</span><h3>Vulnerability Analysis</h3><p>Moving from reading write-ups to running my own labs.</p></div>
+      <div class="focus-card focus-card--add">
+        <span class="focus-tag">Reserved</span>
+        <h3>+ Certifications / Tools</h3>
+        <p>Space held for Security+, CTF platform ranks, or specific tools — drop them in whenever you're ready.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section id="projects" class="section projects-section">
+    <div class="section-head">
+      <p class="eyebrow">// 03 — Case Files</p>
+      <h2>Projects</h2>
+      <p class="section-note">Detailed write-ups are on their way. In the meantime, my GitHub is the source of truth.</p>
+    </div>
+
+    <div class="projects-grid">
+      <a class="project-card project-card--placeholder" href="https://github.com/Ashwin7807" target="_blank" rel="noopener">
+        <span class="case-no">CASE 01</span>
+        <h3>Reserved for a project</h3>
+        <p>Add a title, a short description, and a repo link — this card is ready for it.</p>
+        <span class="project-link">See GitHub in the meantime →</span>
+      </a>
+      <a class="project-card project-card--placeholder" href="https://github.com/Ashwin7807" target="_blank" rel="noopener">
+        <span class="case-no">CASE 02</span>
+        <h3>Reserved for a project</h3>
+        <p>Same here — swap this content out once it's ready to show.</p>
+        <span class="project-link">See GitHub in the meantime →</span>
+      </a>
+      <a class="project-card project-card--placeholder" href="https://github.com/Ashwin7807" target="_blank" rel="noopener">
+        <span class="case-no">CASE 03</span>
+        <h3>Reserved for a project</h3>
+        <p>A CTF write-up, a lab, or a small tool all count.</p>
+        <span class="project-link">See GitHub in the meantime →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== EDUCATION ===================== -->
+  <section id="education" class="section education-section">
+    <div class="section-head">
+      <p class="eyebrow">// 04 — Record</p>
+      <h2>Education</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-body">
+          <h3>B.Sc. Computer Science</h3>
+          <p class="timeline-org">Dr. G.R. Damodaran College of Science</p>
+          <p class="timeline-desc">Currently pursuing — building a foundation across programming, systems, and networks, with a self-directed focus on cybersecurity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESUME ===================== -->
+  <section id="resume" class="section resume-section">
+    <div class="section-head">
+      <p class="eyebrow">// 05 — Classified</p>
+      <h2>Resume</h2>
+    </div>
+
+    <div class="dossier">
+      <div class="dossier-stamp">PENDING UPLOAD</div>
+      <div class="dossier-tab">FILE // ASHWIN_G_RESUME.PDF</div>
+      <p class="dossier-text">The full resume isn't attached yet. Once it's ready, it'll slot in right here for viewing and download.</p>
+      <button class="btn btn-ghost btn-disabled" disabled>Download resume — coming soon</button>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="section contact-section">
+    <div class="section-head">
+      <p class="eyebrow">// 06 — Open a Channel</p>
+      <h2>Let's talk</h2>
+      <p class="section-note">Open to internships, entry-level security roles, CTF teams, or just talking about the field.</p>
+    </div>
+
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:ashwin.g7807@gmail.com">
+        <span class="contact-label">Email</span>
+        <span class="contact-value">ashwin.g7807@gmail.com</span>
+      </a>
+      <a class="contact-card" href="tel:+918778506185">
+        <span class="contact-label">Phone</span>
+        <span class="contact-value">+91 87785 06185</span>
+      </a>
+      <a class="contact-card" href="https://github.com/Ashwin7807" target="_blank" rel="noopener">
+        <span class="contact-label">GitHub</span>
+        <span class="contact-value">github.com/Ashwin7807</span>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/ashwin-g-720049424/" target="_blank" rel="noopener">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-value">in/ashwin-g</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> Ashwin G. Built by hand, secured by habit.</p>
+</footer>
+
+<script type="module" src="js/script.js"></script>
+</body>
+</html>
