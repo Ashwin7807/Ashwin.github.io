@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -48,8 +48,8 @@
     <div id="shield-stage"></div>
 
     <div class="hero-content">
-      <p class="eyebrow">// Case File: 001</p>
-      <h1 class="hero-name">Ashwin<span class="dot">.</span></h1>
+      <p class="eyebrow">Portfolio</p>
+      <h1 class="hero-name" id="hero-name" data-full="Ashwin"><span class="caret" id="hero-caret"></span></h1>
 
       <div class="rolling-text" id="rolling-text" aria-live="polite">
         <span class="rolling-line is-active">Computer Science Student</span>
@@ -72,7 +72,7 @@
   <!-- ===================== ABOUT ===================== -->
   <section id="about" class="section about-section">
     <div class="section-head">
-      <p class="eyebrow">// 01 — Subject Profile</p>
+      <p class="eyebrow">01 · About</p>
       <h2>About</h2>
     </div>
 
@@ -86,7 +86,9 @@
               <div class="frame-corner tr"></div>
               <div class="frame-corner bl"></div>
               <div class="frame-corner br"></div>
-              <img src="assets/ashwin.jpg" alt="Ashwin G">
+              <div class="id-photo-wrap">
+                <img src="assets/ashwin.jpg" alt="Ashwin G">
+              </div>
               <div class="id-card-label">
                 <span class="id-label-name">ASHWIN&nbsp;G</span>
                 <span class="id-label-role">CYBERSECURITY ANALYST — TRAINEE</span>
@@ -115,7 +117,10 @@
                   <circle cx="60" cy="58" r="4" fill="#1c1610"/>
                   <path d="M46 66 Q50 70 54 66" stroke="#1c1610" stroke-width="2" fill="none" stroke-linecap="round"/>
                   <path d="M30 64 L14 60 M30 68 L14 68 M30 72 L15 76" stroke="#1c1610" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                  <path d="M70 64 L86 60 M70 68 L86 68 M70 72 L85 76" stroke="#1c1610" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <g class="cat-paw">
+                    <ellipse cx="78" cy="52" rx="8" ry="11" fill="#3a2e22"/>
+                    <ellipse cx="78" cy="46" rx="2" ry="2.6" fill="#e7d9c4" opacity="0"/>
+                  </g>
                 </svg>
               </div>
               <p class="flip-hint">click / tap to flip back ↻</p>
@@ -141,21 +146,48 @@
   <!-- ===================== FOCUS AREAS (Skills placeholder-friendly) ===================== -->
   <section id="focus" class="section focus-section">
     <div class="section-head">
-      <p class="eyebrow">// 02 — Focus Areas</p>
-      <h2>What I'm building toward</h2>
-      <p class="section-note">A living list, not a finished skillset — updated as I actually earn each line.</p>
+      <p class="eyebrow">02 · Skills</p>
+      <h2>Skills</h2>
+      <p class="section-note">Three directions I'm actively growing in, plus the languages and tools I already reach for.</p>
     </div>
 
-    <div class="focus-grid">
-      <div class="focus-card"><span class="focus-tag">Foundations</span><h3>Networking &amp; Protocols</h3><p>TCP/IP, DNS, HTTP(S) — how data actually moves, so I can spot when it moves wrong.</p></div>
-      <div class="focus-card"><span class="focus-tag">Foundations</span><h3>Linux &amp; the Command Line</h3><p>Comfortable in a terminal, learning to be dangerous in one.</p></div>
-      <div class="focus-card"><span class="focus-tag">In progress</span><h3>Web App Security</h3><p>Working through the OWASP Top 10, one vulnerability class at a time.</p></div>
-      <div class="focus-card"><span class="focus-tag">In progress</span><h3>Python Scripting</h3><p>Automating the boring parts and building small security tools of my own.</p></div>
-      <div class="focus-card"><span class="focus-tag">Next up</span><h3>Vulnerability Analysis</h3><p>Moving from reading write-ups to running my own labs.</p></div>
-      <div class="focus-card focus-card--add">
-        <span class="focus-tag">Reserved</span>
-        <h3>+ Certifications / Tools</h3>
-        <p>Space held for Security+, CTF platform ranks, or specific tools — drop them in whenever you're ready.</p>
+    <div class="skill-categories">
+      <div class="skill-card skill-card--teal">
+        <div class="skill-icon">
+          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M17 24 L22 29 L32 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="skill-status">Ongoing</span>
+        <h3>Cybersecurity</h3>
+        <p>Networking fundamentals, Linux, and the OWASP Top 10 — building toward analyst-level, hands-on skill.</p>
+      </div>
+
+      <div class="skill-card skill-card--gold">
+        <div class="skill-icon">
+          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M16 14 L6 24 L16 34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 14 L42 24 L32 34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 8 L20 40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="skill-status">Growing</span>
+        <h3>Web Development</h3>
+        <p>Building and shipping full pages and small tools — the same instincts that make for a better security eye.</p>
+      </div>
+
+      <div class="skill-card skill-card--rose">
+        <div class="skill-icon">
+          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M24 6 L27 18 L39 21 L27 24 L24 36 L21 24 L9 21 L21 18 Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="38" cy="10" r="2.4" fill="currentColor"/><circle cx="9" cy="37" r="2" fill="currentColor"/></svg>
+        </div>
+        <span class="skill-status">Exploring</span>
+        <h3>AI Prompt Engineering</h3>
+        <p>Learning to design and refine prompts — getting precise, reliable output out of AI tools and models.</p>
+      </div>
+    </div>
+
+    <div class="lang-row">
+      <p class="lang-row-label">Languages &amp; Tools</p>
+      <div class="lang-chips">
+        <div class="lang-chip"><span class="lang-mark">Py</span>Python</div>
+        <div class="lang-chip"><span class="lang-mark">Jv</span>Java</div>
+        <div class="lang-chip"><span class="lang-mark">C++</span>C++</div>
+        <div class="lang-chip"><span class="lang-mark">SQL</span>SQL</div>
+        <div class="lang-chip lang-chip--ongoing"><span class="lang-mark">Lx</span>Linux <em>(ongoing)</em></div>
       </div>
     </div>
   </section>
@@ -163,7 +195,7 @@
   <!-- ===================== PROJECTS ===================== -->
   <section id="projects" class="section projects-section">
     <div class="section-head">
-      <p class="eyebrow">// 03 — Case Files</p>
+      <p class="eyebrow">03 · Projects</p>
       <h2>Projects</h2>
       <p class="section-note">Detailed write-ups are on their way. In the meantime, my GitHub is the source of truth.</p>
     </div>
@@ -193,7 +225,7 @@
   <!-- ===================== EDUCATION ===================== -->
   <section id="education" class="section education-section">
     <div class="section-head">
-      <p class="eyebrow">// 04 — Record</p>
+      <p class="eyebrow">04 · Education</p>
       <h2>Education</h2>
     </div>
 
@@ -212,7 +244,7 @@
   <!-- ===================== RESUME ===================== -->
   <section id="resume" class="section resume-section">
     <div class="section-head">
-      <p class="eyebrow">// 05 — Classified</p>
+      <p class="eyebrow">05 · Resume</p>
       <h2>Resume</h2>
     </div>
 
@@ -227,7 +259,7 @@
   <!-- ===================== CONTACT ===================== -->
   <section id="contact" class="section contact-section">
     <div class="section-head">
-      <p class="eyebrow">// 06 — Open a Channel</p>
+      <p class="eyebrow">06 · Contact</p>
       <h2>Let's talk</h2>
       <p class="section-note">Open to internships, entry-level security roles, CTF teams, or just talking about the field.</p>
     </div>

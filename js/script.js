@@ -16,6 +16,37 @@ setTimeout(() => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =========================================================
+   HERO NAME — types in like an opening title card, "A" to full name
+   ========================================================= */
+(() => {
+  const el = document.getElementById('hero-name');
+  const caret = document.getElementById('hero-caret');
+  if (!el) return;
+  const full = el.dataset.full || 'Ashwin';
+  const delayStart = prefersReducedMotion ? 0 : 2200; // starts as boot screen clears
+
+  setTimeout(() => {
+    caret.classList.add('is-visible');
+    full.split('').forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'letter';
+      span.textContent = ch;
+      span.style.animationDelay = `${i * 0.09}s`;
+      el.insertBefore(span, caret);
+    });
+
+    setTimeout(() => {
+      const dot = document.createElement('span');
+      dot.className = 'letter dot';
+      dot.textContent = '.';
+      dot.style.animationDelay = '0s';
+      el.insertBefore(dot, caret);
+      setTimeout(() => caret.classList.remove('is-visible'), 900);
+    }, full.length * 90 + 250);
+  }, delayStart);
+})();
+
+/* =========================================================
    ROLLING TEXT
    ========================================================= */
 (() => {
@@ -101,7 +132,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   // scattered "node" points where lines intersect get a small pulse
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    ctx.strokeStyle = 'rgba(201,124,61,0.07)';
+    ctx.strokeStyle = 'rgba(198,166,100,0.07)';
     ctx.lineWidth = 1 * dpr;
 
     const offset = (t * 6) % (spacing * dpr);
@@ -119,7 +150,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       ctx.stroke();
     }
 
-    ctx.fillStyle = 'rgba(201,124,61,0.16)';
+    ctx.fillStyle = 'rgba(198,166,100,0.16)';
     for (let x = -spacing * dpr; x < w + spacing * dpr; x += spacing * dpr) {
       for (let y = -spacing * dpr; y < h + spacing * dpr; y += spacing * dpr) {
         const nx = x + offset;
@@ -166,49 +197,111 @@ document.getElementById('year').textContent = new Date().getFullYear();
   window.addEventListener('resize', resize);
 
   let mx = w / 2, my = h / 2;
-  let ringR = 0;
+  let clickPulse = 0;
+  let scanAngle = 0;
   const glyphs = [];
   const hexChars = '0123456789ABCDEF';
+  let overInteractive = false;
 
   window.addEventListener('mousemove', (e) => {
     mx = e.clientX * dpr;
     my = e.clientY * dpr;
-    if (Math.random() < 0.25) {
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    overInteractive = !!(target && target.closest('a, button, .id-card'));
+    if (Math.random() < 0.4) {
+      const angle = Math.random() * Math.PI * 2;
+      const spread = Math.random() * 10 * dpr;
+      const pair = Math.random() < 0.3;
       glyphs.push({
-        x: mx, y: my,
-        ch: hexChars[Math.floor(Math.random() * hexChars.length)],
+        x: mx + Math.cos(angle) * spread,
+        y: my + Math.sin(angle) * spread,
+        ch: pair
+          ? hexChars[Math.floor(Math.random() * hexChars.length)] + hexChars[Math.floor(Math.random() * hexChars.length)]
+          : hexChars[Math.floor(Math.random() * hexChars.length)],
         life: 1,
+        decay: 0.014 + Math.random() * 0.016,
+        drift: (Math.random() - 0.5) * 0.4,
+        size: (7.5 + Math.random() * 3.5) * dpr,
       });
     }
   });
-  window.addEventListener('mousedown', () => { ringR = 0; });
+  window.addEventListener('mousedown', () => { clickPulse = 1; });
+
+  function drawReticle(size, bracket, gap) {
+    const c = overInteractive ? '198,166,100' : '169,152,133';
+    ctx.strokeStyle = `rgba(${c},0.85)`;
+    ctx.lineWidth = 1.4 * dpr;
+
+    // four corner brackets — target-lock style
+    const s = size, b = bracket;
+    const corners = [
+      [-1, -1], [1, -1], [-1, 1], [1, 1],
+    ];
+    corners.forEach(([sx, sy]) => {
+      const cx = mx + sx * s;
+      const cy = my + sy * s;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + sy * -b);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx + sx * -b, cy);
+      ctx.stroke();
+    });
+
+    // thin crosshair
+    ctx.strokeStyle = `rgba(${c},0.35)`;
+    ctx.lineWidth = 1 * dpr;
+    ctx.beginPath();
+    ctx.moveTo(mx - gap, my); ctx.lineTo(mx - size * 0.4, my);
+    ctx.moveTo(mx + gap, my); ctx.lineTo(mx + size * 0.4, my);
+    ctx.moveTo(mx, my - gap); ctx.lineTo(mx, my - size * 0.4);
+    ctx.moveTo(mx, my + gap); ctx.lineTo(mx, my + size * 0.4);
+    ctx.stroke();
+  }
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
 
     // core dot
     ctx.beginPath();
-    ctx.arc(mx, my, 3 * dpr, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(201,124,61,0.9)';
+    ctx.arc(mx, my, 2 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = overInteractive ? 'rgba(198,166,100,0.95)' : 'rgba(241,233,221,0.8)';
     ctx.fill();
 
-    // soft glow ring
-    ringR += 0.6 * dpr;
-    if (ringR > 26 * dpr) ringR = 0;
-    ctx.beginPath();
-    ctx.arc(mx, my, ringR, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(201,124,61,${0.35 * (1 - ringR / (26 * dpr))})`;
-    ctx.lineWidth = 1 * dpr;
-    ctx.stroke();
+    // target-lock reticle, tightens slightly over interactive elements
+    const size = (overInteractive ? 14 : 18) * dpr;
+    drawReticle(size, 5 * dpr, 5 * dpr);
 
-    // trailing hex glyphs
-    ctx.font = `${10 * dpr}px 'JetBrains Mono', monospace`;
+    // slow rotating scan tick on the reticle radius
+    scanAngle += 0.02;
+    const rx = mx + Math.cos(scanAngle) * size * 1.35;
+    const ry = my + Math.sin(scanAngle) * size * 1.35;
+    ctx.beginPath();
+    ctx.arc(rx, ry, 1.6 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(198,166,100,0.7)';
+    ctx.fill();
+
+    // click pulse — brief expanding ring, like a scan ping
+    if (clickPulse > 0) {
+      ctx.beginPath();
+      ctx.arc(mx, my, (1 - clickPulse) * 30 * dpr, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(198,166,100,${clickPulse})`;
+      ctx.lineWidth = 1.2 * dpr;
+      ctx.stroke();
+      clickPulse -= 0.04;
+    }
+
+    // trailing hex glyphs — soft glow, gentle upward drift, varied size/lifespan
     for (let i = glyphs.length - 1; i >= 0; i--) {
       const g = glyphs[i];
-      ctx.fillStyle = `rgba(169,152,133,${g.life * 0.5})`;
-      ctx.fillText(g.ch, g.x + 8 * dpr, g.y - 8 * dpr);
-      g.life -= 0.02;
+      ctx.font = `${g.size}px 'JetBrains Mono', monospace`;
+      ctx.shadowColor = 'rgba(198,166,100,0.6)';
+      ctx.shadowBlur = 4 * dpr;
+      ctx.fillStyle = `rgba(210,198,178,${g.life * 0.55})`;
+      ctx.fillText(g.ch, g.x + 14 * dpr, g.y - 14 * dpr);
+      ctx.shadowBlur = 0;
+      g.life -= g.decay;
       g.y -= 0.3 * dpr;
+      g.x += g.drift;
       if (g.life <= 0) glyphs.splice(i, 1);
     }
 
@@ -238,7 +331,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
   // Lighting — warm, moody
   scene.add(new THREE.AmbientLight(0x3a2e22, 1.4));
-  const key = new THREE.PointLight(0xc97c3d, 60, 30);
+  const key = new THREE.PointLight(0xc6a664, 60, 30);
   key.position.set(4, 5, 6);
   scene.add(key);
   const rim = new THREE.PointLight(0x8b4a24, 30, 30);
@@ -259,12 +352,48 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const geometry = new THREE.ExtrudeGeometry(shieldShape, extrudeSettings);
   geometry.center();
 
+  // Procedural brushed-metal texture for surface detail (noise + fine streaks)
+  function makeMetalTexture() {
+    const size = 512;
+    const tc = document.createElement('canvas');
+    tc.width = size; tc.height = size;
+    const tx = tc.getContext('2d');
+    tx.fillStyle = '#808080';
+    tx.fillRect(0, 0, size, size);
+    // fine horizontal brushed streaks
+    for (let i = 0; i < 900; i++) {
+      const y = Math.random() * size;
+      const shade = 110 + Math.random() * 80;
+      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.10)`;
+      tx.lineWidth = 0.6 + Math.random() * 0.8;
+      tx.beginPath();
+      tx.moveTo(0, y);
+      tx.lineTo(size, y + (Math.random() - 0.5) * 4);
+      tx.stroke();
+    }
+    // speckled noise for a hammered look
+    const img = tx.getImageData(0, 0, size, size);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const n = (Math.random() - 0.5) * 26;
+      img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
+    }
+    tx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(tc);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(2, 2);
+    return tex;
+  }
+  const metalTexture = makeMetalTexture();
+
   const material = new THREE.MeshStandardMaterial({
-    color: 0xa9702f,
-    metalness: 0.55,
-    roughness: 0.38,
-    emissive: 0x2a1608,
-    emissiveIntensity: 0.4,
+    color: 0xb08d4f,
+    metalness: 0.62,
+    roughness: 0.42,
+    roughnessMap: metalTexture,
+    bumpMap: metalTexture,
+    bumpScale: 0.012,
+    emissive: 0x24160a,
+    emissiveIntensity: 0.35,
   });
   const shield = new THREE.Mesh(geometry, material);
   scene.add(shield);
@@ -274,14 +403,32 @@ document.getElementById('year').textContent = new Date().getFullYear();
   canvas.width = 512; canvas.height = 512;
   const c = canvas.getContext('2d');
   c.clearRect(0, 0, 512, 512);
-  c.font = '700 150px Fraunces, Georgia, serif';
   c.textAlign = 'center';
   c.textBaseline = 'middle';
-  c.fillStyle = 'rgba(28,22,16,0.88)';
+  c.font = '700 128px "JetBrains Mono", monospace';
+
+  // glitch-offset ghost layers, hacker-terminal style but kept warm-toned
+  c.fillStyle = 'rgba(122,92,52,0.5)';
+  c.fillText('ASH', 250, 246);
+  c.fillStyle = 'rgba(241,233,221,0.28)';
+  c.fillText('ASH', 262, 254);
+
+  // main engraved text
+  c.fillStyle = 'rgba(20,16,13,0.92)';
   c.fillText('ASH', 256, 250);
-  c.strokeStyle = 'rgba(241,233,221,0.25)';
+  c.strokeStyle = 'rgba(241,233,221,0.3)';
   c.lineWidth = 2;
   c.strokeText('ASH', 256, 250);
+
+  // faint scanlines across the plate for a terminal feel
+  c.strokeStyle = 'rgba(20,16,13,0.12)';
+  c.lineWidth = 2;
+  for (let y = 0; y < 512; y += 6) {
+    c.beginPath();
+    c.moveTo(60, y);
+    c.lineTo(452, y);
+    c.stroke();
+  }
 
   const texture = new THREE.CanvasTexture(canvas);
   const decalGeo = new THREE.PlaneGeometry(2.6, 2.6);
@@ -316,30 +463,26 @@ document.getElementById('year').textContent = new Date().getFullYear();
       return;
     }
 
-    // Proximity reaction — only tilts when cursor is near the shield's screen position
+    // Proximity reaction — smooth falloff, tuned to be more sensitive to cursor movement
     const rect = stage.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-    const radius = Math.min(rect.width, rect.height) * 0.5;
+    const radius = Math.min(rect.width, rect.height) * 0.55;
 
-    if (dist < radius) {
-      const nx = (e.clientX - cx) / radius;
-      const ny = (e.clientY - cy) / radius;
-      targetRotY = nx * 0.6;
-      targetRotX = -ny * 0.4;
-    } else {
-      targetRotX = 0;
-      targetRotY = 0;
-    }
+    const nx = (e.clientX - cx) / radius;
+    const ny = (e.clientY - cy) / radius;
+    const strength = Math.max(0, 1 - Math.min(Math.hypot(nx, ny), 1.8) / 1.8);
+
+    targetRotY = Math.max(-0.85, Math.min(0.85, nx * 0.8)) * strength;
+    targetRotX = Math.max(-0.6, Math.min(0.6, -ny * 0.55)) * strength;
   });
 
   function animate() {
     requestAnimationFrame(animate);
     baseRotY += 0.0018;
 
-    currentRotX += (targetRotX - currentRotX) * 0.06;
-    currentRotY += (targetRotY - currentRotY) * 0.06;
+    currentRotX += (targetRotX - currentRotX) * 0.14;
+    currentRotY += (targetRotY - currentRotY) * 0.14;
 
     shield.rotation.x = currentRotX;
     shield.rotation.y = baseRotY + currentRotY;
