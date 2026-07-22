@@ -2,29 +2,29 @@
    TOKENS
    ========================================================= */
 :root{
-  --bg:            #0B0E14;
-  --bg-alt:        #12161F;
-  --bg-raised:     #1C212E;
-  --ink:           #E2E8F0;
-  --muted:         #94A3B8;
-  --muted-dim:     #64748B;
-  --accent:        #60A5FA;
-  --accent-soft:   rgba(96, 165, 250, 0.14);
-  --accent-deep:   #3B82F6;
-  --line:          #1E293B;
-  --line-soft:     rgba(30, 41, 59, 0.6);
+  --bg:            #14100D;
+  --bg-alt:        #1C1610;
+  --bg-raised:     #241C14;
+  --ink:           #F1E9DD;
+  --muted:         #A99885;
+  --muted-dim:     #7A6B58;
+  --accent:        #C6A664;
+  --accent-soft:   rgba(198,166,100,0.14);
+  --accent-deep:   #7A5C34;
+  --line:          #362A1F;
+  --line-soft:     rgba(54,42,31,0.6);
 
-  --teal:          #2DD4BF;
-  --teal-soft:     rgba(45, 212, 191, 0.14);
-  --rose:          #F472B6;
-  --rose-soft:     rgba(244, 114, 182, 0.14);
+  --teal:          #5C8A80;
+  --teal-soft:     rgba(92,138,128,0.14);
+  --rose:          #B27A78;
+  --rose-soft:     rgba(178,122,120,0.14);
 
-  --font-display:  'Outfit', -apple-system, sans-serif;
-  --font-body:     'Inter', -apple-system, sans-serif;
+  --font-display:  'Fraunces', 'Georgia', serif;
+  --font-body:     'Manrope', -apple-system, sans-serif;
   --font-mono:     'JetBrains Mono', 'Courier New', monospace;
 
   --container:     1120px;
-  --radius:        8px;
+  --radius:        3px;
 }
 
 *{ box-sizing: border-box; }
@@ -57,11 +57,14 @@ img{ max-width: 100%; display: block; }
 /* =========================================================
    BACKGROUND / CURSOR CANVASES
    ========================================================= */
-#bg-canvas{
+#cursor-grid{
   position: fixed; inset: 0; z-index: 0;
   width: 100%; height: 100%;
-  opacity: 0.55;
   pointer-events: none;
+  overflow: hidden;
+}
+#cursor-grid .cursor-grid__canvas{
+  display: block; width: 100%; height: 100%;
 }
 #cursor-canvas{
   position: fixed; inset: 0; z-index: 999;
@@ -190,19 +193,23 @@ main{ position: relative; z-index: 1; }
   color: var(--ink); letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.hero-name .dot{ color: var(--accent); }
-.hero-name .letter{
-  display: inline-block; opacity: 0; transform: translateY(0.25em);
-  animation: letterIn 0.5s cubic-bezier(0.2,0.7,0.3,1) forwards;
+.hero-name .dot{
+  color: var(--accent); display: inline-block;
+  transition: opacity 0.5s ease;
 }
-@keyframes letterIn{ to{ opacity: 1; transform: translateY(0); } }
-.hero-name .caret{
-  display: inline-block; width: 0.05em; height: 0.78em; background: var(--accent);
-  margin-left: 0.04em; vertical-align: -0.05em; opacity: 0;
-  animation: caretBlink 0.9s step-end infinite;
+.decrypted-char{
+  display: inline-block;
+  transition: color 0.18s ease, text-shadow 0.18s ease;
+  font-family: var(--font-display);
 }
-.hero-name .caret.is-visible{ opacity: 1; }
-@keyframes caretBlink{ 0%, 100%{ opacity: 1; } 50%{ opacity: 0; } }
+.decrypted-char.encrypted{
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(198,166,100,0.5);
+}
+.decrypted-char.revealed{
+  color: var(--ink);
+  text-shadow: none;
+}
 
 .rolling-text{
   position: relative; height: 34px; margin: 18px 0 22px;
@@ -270,9 +277,9 @@ main{ position: relative; z-index: 1; }
 }
 @keyframes catWave{
   0%, 100%{ transform: rotate(0deg); }
-  25%{ transform: rotate(-35deg); }
-  50%{ transform: rotate(-5deg); }
-  75%{ transform: rotate(-35deg); }
+  25%{ transform: rotate(-12deg); }
+  50%{ transform: rotate(-3deg); }
+  75%{ transform: rotate(-12deg); }
 }
 .id-card-back{ transform: rotateY(180deg); justify-content: center; align-items: center; text-align: center; gap: 14px; }
 
@@ -333,10 +340,12 @@ main{ position: relative; z-index: 1; }
 
 .skill-card{
   position: relative; background: var(--bg-alt); border: 1px solid var(--line);
-  border-radius: 6px; padding: 28px 26px; transition: transform 0.3s ease, border-color 0.3s ease;
+  border-radius: 6px; padding: 28px 26px; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
 }
-.skill-card:hover{ transform: translateY(-4px); }
-.skill-icon{ width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.skill-card:hover{ transform: translateY(-4px); box-shadow: 0 12px 40px -12px currentColor; }
+.skill-icon{ width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; position: relative; transition: box-shadow 0.3s ease; }
+.skill-card:hover .skill-icon{ box-shadow: 0 0 18px currentColor, 0 0 36px currentColor; }
 .skill-status{
   position: absolute; top: 26px; right: 24px; font-family: var(--font-mono); font-size: 0.6rem;
   letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid currentColor;
@@ -448,4 +457,121 @@ main{ position: relative; z-index: 1; }
   position: relative; z-index: 1; text-align: center; padding: 40px 24px;
   border-top: 1px solid var(--line); font-family: var(--font-mono);
   font-size: 0.72rem; color: var(--muted-dim);
+}
+
+/* =========================================================
+   FOLDER COMPONENT
+   ========================================================= */
+.folder{ transition: all 0.2s ease-in; cursor: none; }
+.folder:not(.open):hover{ transform: translateY(-8px); }
+.folder:not(.open):hover .paper{ transform: translate(-50%, 0%); }
+.folder:not(.open):hover .folder__front{ transform: skew(15deg) scaleY(0.6); }
+.folder:not(.open):hover .right{ transform: skew(-15deg) scaleY(0.6); }
+
+.folder.open{ transform: translateY(-8px); }
+.folder.open .paper:nth-child(1){ transform: translate(-120%, -70%) rotateZ(-15deg); }
+.folder.open .paper:nth-child(1):hover{ transform: translate(-120%, -70%) rotateZ(-15deg) scale(1.1); }
+.folder.open .paper:nth-child(2){ transform: translate(10%, -70%) rotateZ(15deg); height: 80%; }
+.folder.open .paper:nth-child(2):hover{ transform: translate(10%, -70%) rotateZ(15deg) scale(1.1); }
+.folder.open .paper:nth-child(3){ transform: translate(-50%, -100%) rotateZ(5deg); height: 80%; }
+.folder.open .paper:nth-child(3):hover{ transform: translate(-50%, -100%) rotateZ(5deg) scale(1.1); }
+.folder.open .folder__front{ transform: skew(15deg) scaleY(0.6); }
+.folder.open .right{ transform: skew(-15deg) scaleY(0.6); }
+
+.folder__back{
+  position: relative; width: 100px; height: 80px;
+  background: var(--folder-back-color, #4920D9);
+  border-radius: 0px 10px 10px 10px;
+}
+.folder__back::after{
+  position: absolute; z-index: 0; bottom: 98%; left: 0;
+  content: ''; width: 30px; height: 10px;
+  background: var(--folder-back-color, #4920D9);
+  border-radius: 5px 5px 0 0;
+}
+
+.paper{
+  position: absolute; z-index: 2; bottom: 10%; left: 50%;
+  transform: translate(-50%, 10%);
+  width: 70%; height: 80%;
+  background: var(--paper-1, #e6e6e6);
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.paper:nth-child(2){ background: var(--paper-2, #f2f2f2); width: 80%; height: 70%; }
+.paper:nth-child(3){ background: var(--paper-3, #ffffff); width: 90%; height: 60%; }
+
+.folder__front{
+  position: absolute; z-index: 3;
+  width: 100%; height: 100%;
+  background: var(--folder-color, #5227FF);
+  border-radius: 5px 10px 10px 10px;
+  transform-origin: bottom;
+  transition: all 0.3s ease-in-out;
+}
+.folder:focus-visible{ outline: 2px solid #ffffff; outline-offset: 4px; border-radius: 10px; }
+
+.folder-showcase{
+  display: flex; flex-direction: column; align-items: center;
+  gap: 24px; margin-bottom: 44px; padding-top: 10px;
+}
+.folder-label{
+  font-family: var(--font-mono); font-size: 0.72rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted-dim); margin: 0;
+}
+
+/* =========================================================
+   SKILLS DECORATIVE ART
+   ========================================================= */
+.focus-section{ position: relative; }
+.skill-categories, .lang-row, .focus-section .section-head{ position: relative; z-index: 1; }
+.skills-deco{ position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+
+.skills-deco__hex{ position: absolute; animation: hexFloat 8s ease-in-out infinite; }
+.hex-1{ top: 8%; right: 5%; animation-delay: 0s; }
+.hex-2{ top: 55%; right: 12%; animation-delay: 2.5s; }
+.hex-3{ top: 25%; left: 2%; animation-delay: 4.5s; }
+.hex-4{ bottom: 10%; left: 15%; animation-delay: 1s; }
+
+@keyframes hexFloat{
+  0%, 100%{ transform: translateY(0) rotate(0deg); opacity: 0.3; }
+  50%{ transform: translateY(-20px) rotate(15deg); opacity: 0.6; }
+}
+
+.skills-deco__orb{
+  position: absolute; border-radius: 50%;
+  filter: blur(40px);
+  animation: orbPulse 6s ease-in-out infinite;
+}
+.orb-1{ width: 150px; height: 150px; background: rgba(92,138,128,0.15); top: 10%; left: 8%; animation-delay: 0s; }
+.orb-2{ width: 100px; height: 100px; background: rgba(198,166,100,0.12); bottom: 15%; right: 6%; animation-delay: 2s; }
+.orb-3{ width: 80px; height: 80px; background: rgba(178,122,120,0.12); top: 45%; left: 45%; animation-delay: 4s; }
+
+@keyframes orbPulse{
+  0%, 100%{ opacity: 0.4; transform: scale(1); }
+  50%{ opacity: 0.9; transform: scale(1.4); }
+}
+
+.skills-deco__circuit{ position: absolute; bottom: 8%; left: 3%; }
+
+.skills-deco__dot{
+  position: absolute; width: 3px; height: 3px;
+  border-radius: 50%;
+  animation: dotDrift 12s linear infinite;
+}
+.dot-1{ top: 18%; left: 22%; background: #C6A664; animation-delay: 0s; }
+.dot-2{ top: 35%; left: 68%; background: #5C8A80; animation-delay: 2s; }
+.dot-3{ top: 65%; left: 38%; background: #C6A664; animation-delay: 4s; }
+.dot-4{ top: 12%; left: 78%; background: #B27A78; animation-delay: 5s; }
+.dot-5{ top: 50%; left: 12%; background: #5C8A80; animation-delay: 7s; }
+.dot-6{ top: 78%; left: 55%; background: #C6A664; animation-delay: 9s; }
+.dot-7{ top: 40%; left: 90%; background: #B27A78; animation-delay: 3s; }
+.dot-8{ top: 72%; left: 82%; background: #5C8A80; animation-delay: 6s; }
+
+@keyframes dotDrift{
+  0%{ transform: translate(0, 0); opacity: 0; }
+  10%{ opacity: 0.6; }
+  90%{ opacity: 0.6; }
+  100%{ transform: translate(40px, -50px); opacity: 0; }
 }

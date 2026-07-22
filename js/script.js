@@ -16,30 +16,48 @@ setTimeout(() => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =========================================================
-   HERO NAME — GSAP SplitType animation
+   HERO NAME — DecryptedText scramble-reveal animation
    ========================================================= */
 (() => {
-  const el = document.getElementById('hero-name');
-  if (!el || typeof SplitType === 'undefined' || typeof gsap === 'undefined') return;
-  
-  const delayStart = prefersReducedMotion ? 0 : 2200;
+  const container = document.getElementById('decrypted-name');
+  const dot = document.getElementById('hero-dot');
+  if (!container) return;
+
+  const text = container.dataset.text || 'Ashwin';
+  const speed = 50;
+  const maxIterations = 14;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>';
+  const delayStart = prefersReducedMotion ? 100 : 2200;
+
+  function getRandomChar() {
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  function renderText(display, isDecrypted) {
+    container.innerHTML = '';
+    display.split('').forEach((char) => {
+      const span = document.createElement('span');
+      span.className = isDecrypted ? 'decrypted-char revealed' : 'decrypted-char encrypted';
+      span.textContent = char;
+      container.appendChild(span);
+    });
+  }
+
+  // Start with invisible placeholder
+  renderText(text.split('').map(() => '\u00A0').join(''), false);
 
   setTimeout(() => {
-    // Split the text into characters
-    const text = new SplitType(el, { types: 'chars' });
-    
-    // Mimic the React Bits SplitText animation behavior
-    gsap.fromTo(text.chars, 
-      { opacity: 0, y: 40 },
-      {
-        opacity: 1, 
-        y: 0,
-        duration: 1.25,
-        ease: 'power3.out',
-        stagger: 0.1,
-        force3D: true
+    let iteration = 0;
+    const interval = setInterval(() => {
+      const scrambled = text.split('').map(ch => ch === ' ' ? ' ' : getRandomChar()).join('');
+      renderText(scrambled, false);
+      iteration++;
+      if (iteration >= maxIterations) {
+        clearInterval(interval);
+        renderText(text, true);
+        if (dot) dot.style.opacity = '1';
       }
-    );
+    }, speed);
   }, delayStart);
 })();
 
@@ -106,72 +124,150 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* =========================================================
-   AMBIENT BACKGROUND — schematic / circuit grid, slow drift
+   CURSOR-REACTIVE GRID BACKGROUND (CursorGrid)
    ========================================================= */
 (() => {
-  const canvas = document.getElementById('bg-canvas');
+  const container = document.getElementById('cursor-grid');
+  if (!container) return;
+  const canvas = container.querySelector('.cursor-grid__canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let w, h, dpr;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = canvas.width = window.innerWidth * dpr;
-    h = canvas.height = document.documentElement.scrollHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = document.documentElement.scrollHeight + 'px';
+  const cfg = {
+    cellSize: 70, color: '#D946EF', radius: 140,
+    falloff: 'smooth', holdTime: 400, fadeDuration: 800,
+    lineWidth: 1.2, maxOpacity: 1, fillOpacity: 0,
+    gridOpacity: 0, cellRadius: 0, clickPulse: true, pulseSpeed: 600
+  };
+
+  const FALLOFF = { linear: t => t, smooth: t => t * t * (3 - 2 * t), sharp: t => t * t * t };
+  const hx = cfg.color.replace('#', '');
+  const cR = parseInt(hx.slice(0, 2), 16);
+  const cG = parseInt(hx.slice(2, 4), 16);
+  const cB = parseInt(hx.slice(4, 6), 16);
+
+  let cols = 0, rows = 0, offX = 0, offY = 0;
+  let alphas, touched, gw = 0, gh = 0;
+  const pulses = [];
+  let raf = 0, running = false, lastFrame = 0;
+
+  function rebuild() {
+    gw = window.innerWidth; gh = window.innerHeight;
+    canvas.width = Math.max(1, Math.round(gw * dpr));
+    canvas.height = Math.max(1, Math.round(gh * dpr));
+    canvas.style.width = gw + 'px';
+    canvas.style.height = gh + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(gw / cfg.cellSize) + 1;
+    rows = Math.ceil(gh / cfg.cellSize) + 1;
+    offX = (gw - cols * cfg.cellSize) / 2;
+    offY = (gh - rows * cfg.cellSize) / 2;
+    alphas = new Float32Array(cols * rows);
+    touched = new Float64Array(cols * rows);
   }
-  resize();
-  window.addEventListener('resize', resize);
 
-  const spacing = 64;
-  let t = 0;
+  function cellCenter(i) {
+    return [
+      offX + (i % cols) * cfg.cellSize + cfg.cellSize / 2,
+      offY + Math.floor(i / cols) * cfg.cellSize + cfg.cellSize / 2
+    ];
+  }
 
-  // scattered "node" points where lines intersect get a small pulse
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    ctx.strokeStyle = 'rgba(198,166,100,0.07)';
-    ctx.lineWidth = 1 * dpr;
-
-    const offset = (t * 6) % (spacing * dpr);
-
-    for (let x = -spacing * dpr; x < w + spacing * dpr; x += spacing * dpr) {
-      ctx.beginPath();
-      ctx.moveTo(x + offset, 0);
-      ctx.lineTo(x + offset, h);
-      ctx.stroke();
-    }
-    for (let y = -spacing * dpr; y < h + spacing * dpr; y += spacing * dpr) {
-      ctx.beginPath();
-      ctx.moveTo(0, y + offset * 0.4);
-      ctx.lineTo(w, y + offset * 0.4);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = 'rgba(198,166,100,0.16)';
-    for (let x = -spacing * dpr; x < w + spacing * dpr; x += spacing * dpr) {
-      for (let y = -spacing * dpr; y < h + spacing * dpr; y += spacing * dpr) {
-        const nx = x + offset;
-        const ny = y + offset * 0.4;
-        const pulse = (Math.sin(t * 0.02 + nx * 0.01 + ny * 0.01) + 1) / 2;
-        if (pulse > 0.93) {
-          ctx.beginPath();
-          ctx.arc(nx, ny, 2 * dpr, 0, Math.PI * 2);
-          ctx.fill();
-        }
+  function energize(x, y) {
+    const r = Math.max(cfg.radius, 1);
+    const ease = FALLOFF[cfg.falloff] || FALLOFF.linear;
+    const now = performance.now();
+    const mc1 = Math.max(0, Math.floor((x - r - offX) / cfg.cellSize));
+    const mc2 = Math.min(cols - 1, Math.floor((x + r - offX) / cfg.cellSize));
+    const mr1 = Math.max(0, Math.floor((y - r - offY) / cfg.cellSize));
+    const mr2 = Math.min(rows - 1, Math.floor((y + r - offY) / cfg.cellSize));
+    for (let row = mr1; row <= mr2; row++) {
+      for (let col = mc1; col <= mc2; col++) {
+        const i = row * cols + col;
+        const [cx, cy] = cellCenter(i);
+        const dist = Math.hypot(cx - x, cy - y);
+        if (dist > r) continue;
+        const level = ease(1 - dist / r) * cfg.maxOpacity;
+        if (level > alphas[i]) { alphas[i] = level; touched[i] = now; }
+        else if (level > 0) { touched[i] = now; }
       }
     }
   }
 
-  function loop() {
-    if (!prefersReducedMotion) {
-      t += 1;
-      draw();
-      requestAnimationFrame(loop);
-    } else {
-      draw();
+  function draw(now) {
+    const dt = Math.min(now - lastFrame, 50);
+    lastFrame = now;
+    ctx.clearRect(0, 0, gw, gh);
+
+    /* Click pulses */
+    for (let pi = pulses.length - 1; pi >= 0; pi--) {
+      const p = pulses[pi];
+      const age = (now - p.t0) / 1000;
+      const ringR = age * cfg.pulseSpeed;
+      if (ringR > Math.hypot(gw, gh)) { pulses.splice(pi, 1); continue; }
+      const band = cfg.cellSize;
+      const pc1 = Math.max(0, Math.floor((p.x - ringR - band - offX) / cfg.cellSize));
+      const pc2 = Math.min(cols - 1, Math.floor((p.x + ringR + band - offX) / cfg.cellSize));
+      const pr1 = Math.max(0, Math.floor((p.y - ringR - band - offY) / cfg.cellSize));
+      const pr2 = Math.min(rows - 1, Math.floor((p.y + ringR + band - offY) / cfg.cellSize));
+      for (let row = pr1; row <= pr2; row++) {
+        for (let col = pc1; col <= pc2; col++) {
+          const i = row * cols + col;
+          const [cx, cy] = cellCenter(i);
+          const dist = Math.hypot(cx - p.x, cy - p.y);
+          if (Math.abs(dist - ringR) < band / 2 && cfg.maxOpacity > alphas[i]) {
+            alphas[i] = cfg.maxOpacity; touched[i] = now;
+          }
+        }
+      }
     }
+
+    let anyVisible = pulses.length > 0;
+    const fadeStep = dt / Math.max(cfg.fadeDuration, 16);
+    const half = cfg.cellSize / 2;
+
+    for (let i = 0; i < alphas.length; i++) {
+      let a = alphas[i];
+      if (a <= 0) continue;
+      if (now - touched[i] > cfg.holdTime) {
+        a = Math.max(0, a - fadeStep); alphas[i] = a;
+        if (a <= 0) continue;
+      }
+      anyVisible = true;
+      const [cx, cy] = cellCenter(i);
+      const grad = ctx.createRadialGradient(cx, cy, half * 0.1, cx, cy, cfg.cellSize);
+      grad.addColorStop(0, `rgba(${cR},${cG},${cB},${a})`);
+      grad.addColorStop(1, `rgba(${cR},${cG},${cB},0)`);
+      const x = cx - half + 0.5, y = cy - half + 0.5, s = cfg.cellSize - 1;
+      ctx.beginPath();
+      ctx.rect(x, y, s, s);
+      if (cfg.fillOpacity > 0) {
+        ctx.fillStyle = `rgba(${cR},${cG},${cB},${a * cfg.fillOpacity})`; ctx.fill();
+      }
+      ctx.strokeStyle = grad; ctx.lineWidth = cfg.lineWidth; ctx.stroke();
+    }
+
+    if (anyVisible) { raf = requestAnimationFrame(draw); }
+    else { running = false; }
   }
-  loop();
+
+  function wake() {
+    if (running) return;
+    running = true; lastFrame = performance.now();
+    raf = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('pointermove', e => { energize(e.clientX, e.clientY); wake(); });
+  window.addEventListener('pointerdown', e => {
+    if (!cfg.clickPulse) return;
+    pulses.push({ x: e.clientX, y: e.clientY, t0: performance.now() });
+    wake();
+  });
+
+  window.addEventListener('resize', () => { rebuild(); wake(); });
+  rebuild();
+  if (!prefersReducedMotion) wake();
 })();
 
 /* =========================================================
@@ -204,7 +300,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     mx = e.clientX * dpr;
     my = e.clientY * dpr;
     const target = document.elementFromPoint(e.clientX, e.clientY);
-    overInteractive = !!(target && target.closest('a, button, .id-card'));
+    overInteractive = !!(target && target.closest('a, button, .id-card, .folder'));
     if (Math.random() < 0.4) {
       const angle = Math.random() * Math.PI * 2;
       const spread = Math.random() * 10 * dpr;
@@ -326,12 +422,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   stage.appendChild(renderer.domElement);
 
-  // Lighting — cool, moody, futuristic
-  scene.add(new THREE.AmbientLight(0x1e293b, 1.6));
-  const key = new THREE.PointLight(0x60a5fa, 70, 30);
+  // Lighting — warm, moody
+  scene.add(new THREE.AmbientLight(0x3a2e22, 1.4));
+  const key = new THREE.PointLight(0xc6a664, 60, 30);
   key.position.set(4, 5, 6);
   scene.add(key);
-  const rim = new THREE.PointLight(0xf472b6, 40, 30);
+  const rim = new THREE.PointLight(0x8b4a24, 30, 30);
   rim.position.set(-5, -3, -4);
   scene.add(rim);
 
@@ -361,7 +457,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     for (let i = 0; i < 900; i++) {
       const y = Math.random() * size;
       const shade = 110 + Math.random() * 80;
-      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.18)`;
+      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.10)`;
       tx.lineWidth = 0.6 + Math.random() * 0.8;
       tx.beginPath();
       tx.moveTo(0, y);
@@ -371,7 +467,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     // speckled noise for a hammered look
     const img = tx.getImageData(0, 0, size, size);
     for (let i = 0; i < img.data.length; i += 4) {
-      const n = (Math.random() - 0.5) * 45;
+      const n = (Math.random() - 0.5) * 26;
       img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
     }
     tx.putImageData(img, 0, 0);
@@ -383,14 +479,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const metalTexture = makeMetalTexture();
 
   const material = new THREE.MeshStandardMaterial({
-    color: 0x8CA2C2,
-    metalness: 0.75,
-    roughness: 0.35,
+    color: 0xb08d4f,
+    metalness: 0.62,
+    roughness: 0.42,
     roughnessMap: metalTexture,
     bumpMap: metalTexture,
-    bumpScale: 0.025,
-    emissive: 0x0B0E14,
-    emissiveIntensity: 0.4,
+    bumpScale: 0.012,
+    emissive: 0x24160a,
+    emissiveIntensity: 0.35,
   });
   const shield = new THREE.Mesh(geometry, material);
   scene.add(shield);
@@ -402,23 +498,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
   c.clearRect(0, 0, 512, 512);
   c.textAlign = 'center';
   c.textBaseline = 'middle';
-  c.font = '700 128px "Outfit", sans-serif';
+  c.font = '700 128px "JetBrains Mono", monospace';
 
-  // glitch-offset ghost layers, tech-terminal style
-  c.fillStyle = 'rgba(96,165,250,0.5)';
+  // glitch-offset ghost layers, hacker-terminal style but kept warm-toned
+  c.fillStyle = 'rgba(122,92,52,0.5)';
   c.fillText('ASH', 250, 246);
-  c.fillStyle = 'rgba(226,232,240,0.28)';
+  c.fillStyle = 'rgba(241,233,221,0.28)';
   c.fillText('ASH', 262, 254);
 
   // main engraved text
-  c.fillStyle = 'rgba(11,14,20,0.92)';
+  c.fillStyle = 'rgba(20,16,13,0.92)';
   c.fillText('ASH', 256, 250);
-  c.strokeStyle = 'rgba(226,232,240,0.3)';
+  c.strokeStyle = 'rgba(241,233,221,0.3)';
   c.lineWidth = 2;
   c.strokeText('ASH', 256, 250);
 
   // faint scanlines across the plate for a terminal feel
-  c.strokeStyle = 'rgba(11,14,20,0.18)';
+  c.strokeStyle = 'rgba(20,16,13,0.12)';
   c.lineWidth = 2;
   for (let y = 0; y < 512; y += 6) {
     c.beginPath();
@@ -470,8 +566,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const ny = (e.clientY - cy) / radius;
     const strength = Math.max(0, 1 - Math.min(Math.hypot(nx, ny), 1.8) / 1.8);
 
-    targetRotY = Math.max(-1.5, Math.min(1.5, nx * 1.5)) * strength;
-    targetRotX = Math.max(-1.2, Math.min(1.2, -ny * 1.2)) * strength;
+    targetRotY = Math.max(-0.85, Math.min(0.85, nx * 0.8)) * strength;
+    targetRotX = Math.max(-0.6, Math.min(0.6, -ny * 0.55)) * strength;
   });
 
   function animate() {
