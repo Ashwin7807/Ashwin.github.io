@@ -16,33 +16,30 @@ setTimeout(() => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =========================================================
-   HERO NAME — types in like an opening title card, "A" to full name
+   HERO NAME — GSAP SplitType animation
    ========================================================= */
 (() => {
   const el = document.getElementById('hero-name');
-  const caret = document.getElementById('hero-caret');
-  if (!el) return;
-  const full = el.dataset.full || 'Ashwin';
-  const delayStart = prefersReducedMotion ? 0 : 2200; // starts as boot screen clears
+  if (!el || typeof SplitType === 'undefined' || typeof gsap === 'undefined') return;
+  
+  const delayStart = prefersReducedMotion ? 0 : 2200;
 
   setTimeout(() => {
-    caret.classList.add('is-visible');
-    full.split('').forEach((ch, i) => {
-      const span = document.createElement('span');
-      span.className = 'letter';
-      span.textContent = ch;
-      span.style.animationDelay = `${i * 0.09}s`;
-      el.insertBefore(span, caret);
-    });
-
-    setTimeout(() => {
-      const dot = document.createElement('span');
-      dot.className = 'letter dot';
-      dot.textContent = '.';
-      dot.style.animationDelay = '0s';
-      el.insertBefore(dot, caret);
-      setTimeout(() => caret.classList.remove('is-visible'), 900);
-    }, full.length * 90 + 250);
+    // Split the text into characters
+    const text = new SplitType(el, { types: 'chars' });
+    
+    // Mimic the React Bits SplitText animation behavior
+    gsap.fromTo(text.chars, 
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1, 
+        y: 0,
+        duration: 1.25,
+        ease: 'power3.out',
+        stagger: 0.1,
+        force3D: true
+      }
+    );
   }, delayStart);
 })();
 
@@ -329,12 +326,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   stage.appendChild(renderer.domElement);
 
-  // Lighting — warm, moody
-  scene.add(new THREE.AmbientLight(0x3a2e22, 1.4));
-  const key = new THREE.PointLight(0xc6a664, 60, 30);
+  // Lighting — cool, moody, futuristic
+  scene.add(new THREE.AmbientLight(0x1e293b, 1.6));
+  const key = new THREE.PointLight(0x60a5fa, 70, 30);
   key.position.set(4, 5, 6);
   scene.add(key);
-  const rim = new THREE.PointLight(0x8b4a24, 30, 30);
+  const rim = new THREE.PointLight(0xf472b6, 40, 30);
   rim.position.set(-5, -3, -4);
   scene.add(rim);
 
@@ -364,7 +361,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     for (let i = 0; i < 900; i++) {
       const y = Math.random() * size;
       const shade = 110 + Math.random() * 80;
-      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.10)`;
+      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.18)`;
       tx.lineWidth = 0.6 + Math.random() * 0.8;
       tx.beginPath();
       tx.moveTo(0, y);
@@ -374,7 +371,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     // speckled noise for a hammered look
     const img = tx.getImageData(0, 0, size, size);
     for (let i = 0; i < img.data.length; i += 4) {
-      const n = (Math.random() - 0.5) * 26;
+      const n = (Math.random() - 0.5) * 45;
       img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
     }
     tx.putImageData(img, 0, 0);
@@ -386,14 +383,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const metalTexture = makeMetalTexture();
 
   const material = new THREE.MeshStandardMaterial({
-    color: 0xb08d4f,
-    metalness: 0.62,
-    roughness: 0.42,
+    color: 0x8CA2C2,
+    metalness: 0.75,
+    roughness: 0.35,
     roughnessMap: metalTexture,
     bumpMap: metalTexture,
-    bumpScale: 0.012,
-    emissive: 0x24160a,
-    emissiveIntensity: 0.35,
+    bumpScale: 0.025,
+    emissive: 0x0B0E14,
+    emissiveIntensity: 0.4,
   });
   const shield = new THREE.Mesh(geometry, material);
   scene.add(shield);
@@ -405,23 +402,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
   c.clearRect(0, 0, 512, 512);
   c.textAlign = 'center';
   c.textBaseline = 'middle';
-  c.font = '700 128px "JetBrains Mono", monospace';
+  c.font = '700 128px "Outfit", sans-serif';
 
-  // glitch-offset ghost layers, hacker-terminal style but kept warm-toned
-  c.fillStyle = 'rgba(122,92,52,0.5)';
+  // glitch-offset ghost layers, tech-terminal style
+  c.fillStyle = 'rgba(96,165,250,0.5)';
   c.fillText('ASH', 250, 246);
-  c.fillStyle = 'rgba(241,233,221,0.28)';
+  c.fillStyle = 'rgba(226,232,240,0.28)';
   c.fillText('ASH', 262, 254);
 
   // main engraved text
-  c.fillStyle = 'rgba(20,16,13,0.92)';
+  c.fillStyle = 'rgba(11,14,20,0.92)';
   c.fillText('ASH', 256, 250);
-  c.strokeStyle = 'rgba(241,233,221,0.3)';
+  c.strokeStyle = 'rgba(226,232,240,0.3)';
   c.lineWidth = 2;
   c.strokeText('ASH', 256, 250);
 
   // faint scanlines across the plate for a terminal feel
-  c.strokeStyle = 'rgba(20,16,13,0.12)';
+  c.strokeStyle = 'rgba(11,14,20,0.18)';
   c.lineWidth = 2;
   for (let y = 0; y < 512; y += 6) {
     c.beginPath();
@@ -473,8 +470,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const ny = (e.clientY - cy) / radius;
     const strength = Math.max(0, 1 - Math.min(Math.hypot(nx, ny), 1.8) / 1.8);
 
-    targetRotY = Math.max(-0.85, Math.min(0.85, nx * 0.8)) * strength;
-    targetRotX = Math.max(-0.6, Math.min(0.6, -ny * 0.55)) * strength;
+    targetRotY = Math.max(-1.5, Math.min(1.5, nx * 1.5)) * strength;
+    targetRotX = Math.max(-1.2, Math.min(1.2, -ny * 1.2)) * strength;
   });
 
   function animate() {
