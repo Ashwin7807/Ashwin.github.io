@@ -16,7 +16,7 @@ setTimeout(() => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =========================================================
-   HERO NAME — DecryptedText scramble-reveal animation
+   HERO NAME — DecryptedText scramble-reveal (letter-by-letter, controlled speed)
    ========================================================= */
 (() => {
   const container = document.getElementById('decrypted-name');
@@ -24,8 +24,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
   if (!container) return;
 
   const text = container.dataset.text || 'Ashwin';
-  const speed = 50;
-  const maxIterations = 14;
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>';
   const delayStart = prefersReducedMotion ? 100 : 2200;
 
@@ -33,31 +31,55 @@ document.getElementById('year').textContent = new Date().getFullYear();
     return chars[Math.floor(Math.random() * chars.length)];
   }
 
-  function renderText(display, isDecrypted) {
+  function render(revealedCount, currentScramble) {
     container.innerHTML = '';
-    display.split('').forEach((char) => {
+    text.split('').forEach((realChar, i) => {
       const span = document.createElement('span');
-      span.className = isDecrypted ? 'decrypted-char revealed' : 'decrypted-char encrypted';
-      span.textContent = char;
+      if (i < revealedCount) {
+        span.className = 'decrypted-char revealed';
+        span.textContent = realChar;
+      } else if (i === revealedCount) {
+        span.className = 'decrypted-char encrypted';
+        span.textContent = currentScramble || getRandomChar();
+      } else {
+        span.className = 'decrypted-char encrypted';
+        span.textContent = getRandomChar();
+      }
       container.appendChild(span);
     });
   }
 
-  // Start with invisible placeholder
-  renderText(text.split('').map(() => '\u00A0').join(''), false);
+  // Pre-render scrambled placeholders
+  render(0, '');
 
   setTimeout(() => {
-    let iteration = 0;
+    let revealedCount = 0;
+    let scrambleFrame = 0;
+    const framesPerLetter = 10; // 10 frames of scrambling per character (slow, clear reveal)
+    const intervalMs = 60; // 60ms between frames
+
     const interval = setInterval(() => {
-      const scrambled = text.split('').map(ch => ch === ' ' ? ' ' : getRandomChar()).join('');
-      renderText(scrambled, false);
-      iteration++;
-      if (iteration >= maxIterations) {
+      if (revealedCount >= text.length) {
         clearInterval(interval);
-        renderText(text, true);
+        container.innerHTML = '';
+        text.split('').forEach((realChar) => {
+          const span = document.createElement('span');
+          span.className = 'decrypted-char revealed';
+          span.textContent = realChar;
+          container.appendChild(span);
+        });
         if (dot) dot.style.opacity = '1';
+        return;
       }
-    }, speed);
+
+      render(revealedCount, getRandomChar());
+      scrambleFrame++;
+
+      if (scrambleFrame >= framesPerLetter) {
+        scrambleFrame = 0;
+        revealedCount++;
+      }
+    }, intervalMs);
   }, delayStart);
 })();
 
@@ -135,10 +157,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
   const cfg = {
-    cellSize: 70, color: '#D946EF', radius: 140,
-    falloff: 'smooth', holdTime: 400, fadeDuration: 800,
-    lineWidth: 1.2, maxOpacity: 1, fillOpacity: 0,
-    gridOpacity: 0, cellRadius: 0, clickPulse: true, pulseSpeed: 600
+    cellSize: 75, color: '#38BDF8', radius: 130,
+    falloff: 'smooth', holdTime: 350, fadeDuration: 700,
+    lineWidth: 1.0, maxOpacity: 0.45, fillOpacity: 0,
+    gridOpacity: 0, cellRadius: 0, clickPulse: true, pulseSpeed: 550
   };
 
   const FALLOFF = { linear: t => t, smooth: t => t * t * (3 - 2 * t), sharp: t => t * t * t };
@@ -404,7 +426,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* =========================================================
-   3D SHIELD — behind hero text, reacts near cursor, drag to rotate
+   3D CYBERSECURITY SHIELD — reactive, rotating encryption mesh & particles
    ========================================================= */
 (() => {
   const stage = document.getElementById('shield-stage');
@@ -422,12 +444,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   stage.appendChild(renderer.domElement);
 
-  // Lighting — warm, moody
-  scene.add(new THREE.AmbientLight(0x3a2e22, 1.4));
-  const key = new THREE.PointLight(0xc6a664, 60, 30);
+  // Lighting — Cool Electric Cyber Theme
+  scene.add(new THREE.AmbientLight(0x0f172a, 1.8));
+  const key = new THREE.PointLight(0x38bdf8, 70, 30);
   key.position.set(4, 5, 6);
   scene.add(key);
-  const rim = new THREE.PointLight(0x8b4a24, 30, 30);
+  const rim = new THREE.PointLight(0x0284c7, 40, 30);
   rim.position.set(-5, -3, -4);
   scene.add(rim);
 
@@ -445,32 +467,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const geometry = new THREE.ExtrudeGeometry(shieldShape, extrudeSettings);
   geometry.center();
 
-  // Procedural brushed-metal texture for surface detail (noise + fine streaks)
+  // Procedural dark metal texture
   function makeMetalTexture() {
     const size = 512;
     const tc = document.createElement('canvas');
     tc.width = size; tc.height = size;
     const tx = tc.getContext('2d');
-    tx.fillStyle = '#808080';
+    tx.fillStyle = '#1e293b';
     tx.fillRect(0, 0, size, size);
-    // fine horizontal brushed streaks
     for (let i = 0; i < 900; i++) {
       const y = Math.random() * size;
-      const shade = 110 + Math.random() * 80;
-      tx.strokeStyle = `rgba(${shade},${shade},${shade},0.10)`;
+      const shade = 30 + Math.random() * 50;
+      tx.strokeStyle = `rgba(${shade},${shade + 20},${shade + 40},0.12)`;
       tx.lineWidth = 0.6 + Math.random() * 0.8;
       tx.beginPath();
       tx.moveTo(0, y);
       tx.lineTo(size, y + (Math.random() - 0.5) * 4);
       tx.stroke();
     }
-    // speckled noise for a hammered look
-    const img = tx.getImageData(0, 0, size, size);
-    for (let i = 0; i < img.data.length; i += 4) {
-      const n = (Math.random() - 0.5) * 26;
-      img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n;
-    }
-    tx.putImageData(img, 0, 0);
     const tex = new THREE.CanvasTexture(tc);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(2, 2);
@@ -479,49 +493,84 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const metalTexture = makeMetalTexture();
 
   const material = new THREE.MeshStandardMaterial({
-    color: 0xb08d4f,
-    metalness: 0.62,
-    roughness: 0.42,
+    color: 0x1e293b,
+    metalness: 0.75,
+    roughness: 0.3,
     roughnessMap: metalTexture,
     bumpMap: metalTexture,
-    bumpScale: 0.012,
-    emissive: 0x24160a,
+    bumpScale: 0.015,
+    emissive: 0x0284c7,
     emissiveIntensity: 0.35,
   });
   const shield = new THREE.Mesh(geometry, material);
   scene.add(shield);
 
-  // Canvas texture with "ASH" engraved look, applied as a decal plane on the front face
+  // Outer Cybersecurity Encryption Mesh Barrier (Wireframe Icosahedron)
+  const meshGeo = new THREE.IcosahedronGeometry(2.4, 1);
+  const meshMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.2 });
+  const cyberMesh = new THREE.Mesh(meshGeo, meshMat);
+  scene.add(cyberMesh);
+
+  // Orbiting Cyber Data Particles
+  const particleCount = 140;
+  const pGeo = new THREE.BufferGeometry();
+  const pPositions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount * 3; i += 3) {
+    const r = 2.2 + Math.random() * 1.6;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = (Math.random() - 0.5) * Math.PI;
+    pPositions[i] = r * Math.cos(theta) * Math.cos(phi);
+    pPositions[i + 1] = r * Math.sin(phi);
+    pPositions[i + 2] = r * Math.sin(theta) * Math.cos(phi);
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0x38bdf8, size: 0.045, transparent: true, opacity: 0.65 });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // Canvas texture with Security Lock Icon + "ASH" engraved decal
   const canvas = document.createElement('canvas');
   canvas.width = 512; canvas.height = 512;
   const c = canvas.getContext('2d');
   c.clearRect(0, 0, 512, 512);
+
+  // Draw cyber circuit grid on shield decal
+  c.strokeStyle = 'rgba(56,189,248,0.2)';
+  c.lineWidth = 2;
+  c.beginPath();
+  c.arc(256, 256, 180, 0, Math.PI * 2);
+  c.stroke();
+
+  // Security Padlock Icon
+  c.fillStyle = '#38bdf8';
+  c.strokeStyle = '#38bdf8';
+  c.lineWidth = 8;
+  // Shackle
+  c.beginPath();
+  c.arc(256, 175, 42, Math.PI, 0);
+  c.stroke();
+  // Lock body
+  c.beginPath();
+  c.roundRect(210, 175, 92, 75, 10);
+  c.fill();
+  // Keyhole
+  c.fillStyle = '#0f172a';
+  c.beginPath();
+  c.arc(256, 205, 10, 0, Math.PI * 2);
+  c.fill();
+
+  // "ASH" engraved text
   c.textAlign = 'center';
   c.textBaseline = 'middle';
-  c.font = '700 128px "JetBrains Mono", monospace';
+  c.font = '800 100px "Syne", sans-serif';
 
-  // glitch-offset ghost layers, hacker-terminal style but kept warm-toned
-  c.fillStyle = 'rgba(122,92,52,0.5)';
-  c.fillText('ASH', 250, 246);
-  c.fillStyle = 'rgba(241,233,221,0.28)';
-  c.fillText('ASH', 262, 254);
-
-  // main engraved text
-  c.fillStyle = 'rgba(20,16,13,0.92)';
-  c.fillText('ASH', 256, 250);
-  c.strokeStyle = 'rgba(241,233,221,0.3)';
-  c.lineWidth = 2;
-  c.strokeText('ASH', 256, 250);
-
-  // faint scanlines across the plate for a terminal feel
-  c.strokeStyle = 'rgba(20,16,13,0.12)';
-  c.lineWidth = 2;
-  for (let y = 0; y < 512; y += 6) {
-    c.beginPath();
-    c.moveTo(60, y);
-    c.lineTo(452, y);
-    c.stroke();
-  }
+  c.fillStyle = 'rgba(56,189,248,0.3)';
+  c.fillText('ASH', 260, 310);
+  c.fillStyle = '#F8FAFC';
+  c.fillText('ASH', 256, 306);
+  c.strokeStyle = '#38bdf8';
+  c.lineWidth = 3;
+  c.strokeText('ASH', 256, 306);
 
   const texture = new THREE.CanvasTexture(canvas);
   const decalGeo = new THREE.PlaneGeometry(2.6, 2.6);
@@ -535,7 +584,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   let targetRotX = 0, targetRotY = 0;
   let currentRotX = 0, currentRotY = 0;
 
-  // Drag to rotate (the "movable" requirement)
+  // Drag to rotate
   let dragging = false;
   let dragStart = { x: 0, y: 0 };
   let dragRot = { x: 0, y: 0 };
@@ -556,7 +605,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
       return;
     }
 
-    // Proximity reaction — smooth falloff, tuned to be more sensitive to cursor movement
     const rect = stage.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
@@ -580,6 +628,11 @@ document.getElementById('year').textContent = new Date().getFullYear();
     shield.rotation.x = currentRotX;
     shield.rotation.y = baseRotY + currentRotY;
     shield.position.y = Math.sin(baseRotY * 4) * 0.08;
+
+    // Counter-rotate cyber mesh and data particles for cybersecurity effect
+    cyberMesh.rotation.y = -baseRotY * 1.5;
+    cyberMesh.rotation.x = Math.sin(baseRotY * 2) * 0.2;
+    particles.rotation.y = baseRotY * 0.8;
 
     renderer.render(scene, camera);
   }
