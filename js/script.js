@@ -23,8 +23,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const dot = document.getElementById('hero-dot');
   if (!container) return;
 
-  const text = container.dataset.text || 'Ashwin';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>';
+  const text = container.dataset.text || 'Hi,I'm Ashwin';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>;
   const delayStart = prefersReducedMotion ? 100 : 2200;
 
   function getRandomChar() {
@@ -55,8 +55,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   setTimeout(() => {
     let revealedCount = 0;
     let scrambleFrame = 0;
-    const framesPerLetter = 10; // 10 frames of scrambling per character (slow, clear reveal)
-    const intervalMs = 60; // 60ms between frames
+    const framesPerLetter = 03; // 10 frames of scrambling per character (slow, clear reveal)
+    const intervalMs = 30; // 60ms between frames
 
     const interval = setInterval(() => {
       if (revealedCount >= text.length) {
@@ -646,88 +646,3 @@ document.getElementById('year').textContent = new Date().getFullYear();
     renderer.setSize(w2, h2);
   });
 })();
-
-/* =========================================================
-   DOCK — macOS magnification + active section highlighting
-   ========================================================= */
-(() => {
-  const BASE = 50;
-  const MAG  = 76;
-  const DIST = 140; // px from center of item to start growing
-
-  const panel = document.querySelector('.dock-panel');
-  if (!panel) return;
-  const items = Array.from(panel.querySelectorAll('.dock-item'));
-
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  function updateSizes(mouseX) {
-    items.forEach(item => {
-      const rect = item.getBoundingClientRect();
-      const center = rect.left + rect.width / 2;
-      const dist = Math.abs(mouseX - center);
-      const t = clamp(1 - dist / DIST, 0, 1);
-      const size = Math.round(lerp(BASE, MAG, t));
-      item.style.width  = size + 'px';
-      item.style.height = size + 'px';
-    });
-  }
-
-  function resetSizes() {
-    items.forEach(item => {
-      item.style.width  = BASE + 'px';
-      item.style.height = BASE + 'px';
-    });
-  }
-
-  panel.addEventListener('mousemove', e => updateSizes(e.clientX));
-  panel.addEventListener('mouseleave', resetSizes);
-  resetSizes();
-
-  // Active section highlight via IntersectionObserver
-  const sections = document.querySelectorAll('main section[id], section[id]');
-  const sectionMap = {};
-  sections.forEach(s => { sectionMap[s.id] = s; });
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const id = entry.target.id;
-      items.forEach(item => {
-        const href = item.getAttribute('href');
-        const match = href === '#' + id || (id === 'top' && href === '#top');
-        item.classList.toggle('is-active', match);
-      });
-    });
-  }, { threshold: 0.4 });
-
-  sections.forEach(s => observer.observe(s));
-})();
-
-/* =========================================================
-   LANG CHIP TOOLTIP — show description on hover/focus
-   ========================================================= */
-(() => {
-  const tooltip = document.getElementById('lang-tooltip');
-  if (!tooltip) return;
-  const chips = document.querySelectorAll('.lang-chip[data-desc]');
-
-  chips.forEach(chip => {
-    const show = () => {
-      tooltip.textContent = '> ' + chip.dataset.desc;
-      tooltip.style.opacity = '1';
-    };
-    const hide = () => {
-      tooltip.style.opacity = '0';
-      setTimeout(() => { if (tooltip.style.opacity === '0') tooltip.textContent = ''; }, 200);
-    };
-
-    chip.addEventListener('mouseenter', show);
-    chip.addEventListener('focus', show);
-    chip.addEventListener('mouseleave', hide);
-    chip.addEventListener('blur', hide);
-  });
-})();
-
