@@ -23,7 +23,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const dot = document.getElementById('hero-dot');
   if (!container) return;
 
-  const text = container.dataset.text || "Hi, I'm Ashwin";
+  const text = container.dataset.text || 'Ashwin';
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>';
   const delayStart = prefersReducedMotion ? 100 : 2200;
 
@@ -55,8 +55,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   setTimeout(() => {
     let revealedCount = 0;
     let scrambleFrame = 0;
-    const framesPerLetter = 4; // Snappy & fast scrambling per character
-    const intervalMs = 35; // Fast 35ms tick rate
+    const framesPerLetter = 10; // 10 frames of scrambling per character (slow, clear reveal)
+    const intervalMs = 60; // 60ms between frames
 
     const interval = setInterval(() => {
       if (revealedCount >= text.length) {
@@ -157,9 +157,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
   const cfg = {
-    cellSize: 75, color: '#10B981', radius: 130,
+    cellSize: 75, color: '#38BDF8', radius: 130,
     falloff: 'smooth', holdTime: 350, fadeDuration: 700,
-    lineWidth: 1.0, maxOpacity: 0.35, fillOpacity: 0,
+    lineWidth: 1.0, maxOpacity: 0.45, fillOpacity: 0,
     gridOpacity: 0, cellRadius: 0, clickPulse: true, pulseSpeed: 550
   };
 
@@ -322,7 +322,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     mx = e.clientX * dpr;
     my = e.clientY * dpr;
     const target = document.elementFromPoint(e.clientX, e.clientY);
-    overInteractive = !!(target && target.closest('a, button, .id-card, .dock-item'));
+    overInteractive = !!(target && target.closest('a, button, .id-card, .folder'));
     if (Math.random() < 0.4) {
       const angle = Math.random() * Math.PI * 2;
       const spread = Math.random() * 10 * dpr;
@@ -342,71 +342,76 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
   window.addEventListener('mousedown', () => { clickPulse = 1; });
 
-  function drawReticle(size) {
-    const c = overInteractive ? '16,185,129' : '148,163,184';
-    ctx.strokeStyle = `rgba(${c}, ${overInteractive ? 0.85 : 0.4})`;
-    ctx.lineWidth = (overInteractive ? 1.5 : 1.2) * dpr;
+  function drawReticle(size, bracket, gap) {
+    const c = overInteractive ? '198,166,100' : '169,152,133';
+    ctx.strokeStyle = `rgba(${c},0.85)`;
+    ctx.lineWidth = 1.4 * dpr;
 
-    // Smooth circular target ring instead of square brackets for easy tracking & clicking
-    ctx.beginPath();
-    ctx.arc(mx, my, size, 0, Math.PI * 2);
-    ctx.stroke();
+    // four corner brackets — target-lock style
+    const s = size, b = bracket;
+    const corners = [
+      [-1, -1], [1, -1], [-1, 1], [1, 1],
+    ];
+    corners.forEach(([sx, sy]) => {
+      const cx = mx + sx * s;
+      const cy = my + sy * s;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + sy * -b);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx + sx * -b, cy);
+      ctx.stroke();
+    });
 
-    // Four subtle precision crosshair ticks on the ring
-    const gap = 3 * dpr;
-    const len = 4 * dpr;
+    // thin crosshair
+    ctx.strokeStyle = `rgba(${c},0.35)`;
+    ctx.lineWidth = 1 * dpr;
     ctx.beginPath();
-    ctx.moveTo(mx - size - len, my); ctx.lineTo(mx - size + gap, my);
-    ctx.moveTo(mx + size - gap, my); ctx.lineTo(mx + size + len, my);
-    ctx.moveTo(mx, my - size - len); ctx.lineTo(mx, my - size + gap);
-    ctx.moveTo(mx, my + size - gap); ctx.lineTo(mx, my + size + len);
+    ctx.moveTo(mx - gap, my); ctx.lineTo(mx - size * 0.4, my);
+    ctx.moveTo(mx + gap, my); ctx.lineTo(mx + size * 0.4, my);
+    ctx.moveTo(mx, my - gap); ctx.lineTo(mx, my - size * 0.4);
+    ctx.moveTo(mx, my + gap); ctx.lineTo(mx, my + size * 0.4);
     ctx.stroke();
   }
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
 
-    // Precise core target dot
+    // core dot
     ctx.beginPath();
-    ctx.arc(mx, my, (overInteractive ? 3.5 : 2.5) * dpr, 0, Math.PI * 2);
-    ctx.fillStyle = overInteractive ? 'rgba(16, 185, 129, 1)' : 'rgba(248, 250, 252, 0.9)';
-    if (overInteractive) {
-      ctx.shadowColor = 'rgba(16, 185, 129, 0.9)';
-      ctx.shadowBlur = 6 * dpr;
-    }
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // Precision circular target ring
-    const size = (overInteractive ? 15 : 11) * dpr;
-    drawReticle(size);
-
-    // Rotating micro-scan tick on the ring
-    scanAngle += 0.025;
-    const rx = mx + Math.cos(scanAngle) * size;
-    const ry = my + Math.sin(scanAngle) * size;
-    ctx.beginPath();
-    ctx.arc(rx, ry, 1.5 * dpr, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
+    ctx.arc(mx, my, 2 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = overInteractive ? 'rgba(198,166,100,0.95)' : 'rgba(241,233,221,0.8)';
     ctx.fill();
 
-    // Click pulse — expanding emerald ping
+    // target-lock reticle, tightens slightly over interactive elements
+    const size = (overInteractive ? 14 : 18) * dpr;
+    drawReticle(size, 5 * dpr, 5 * dpr);
+
+    // slow rotating scan tick on the reticle radius
+    scanAngle += 0.02;
+    const rx = mx + Math.cos(scanAngle) * size * 1.35;
+    const ry = my + Math.sin(scanAngle) * size * 1.35;
+    ctx.beginPath();
+    ctx.arc(rx, ry, 1.6 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(198,166,100,0.7)';
+    ctx.fill();
+
+    // click pulse — brief expanding ring, like a scan ping
     if (clickPulse > 0) {
       ctx.beginPath();
-      ctx.arc(mx, my, (1 - clickPulse) * 28 * dpr, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(16, 185, 129, ${clickPulse})`;
-      ctx.lineWidth = 1.4 * dpr;
+      ctx.arc(mx, my, (1 - clickPulse) * 30 * dpr, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(198,166,100,${clickPulse})`;
+      ctx.lineWidth = 1.2 * dpr;
       ctx.stroke();
       clickPulse -= 0.04;
     }
 
-    // Trailing hex glyphs in emerald jade
+    // trailing hex glyphs — soft glow, gentle upward drift, varied size/lifespan
     for (let i = glyphs.length - 1; i >= 0; i--) {
       const g = glyphs[i];
       ctx.font = `${g.size}px 'JetBrains Mono', monospace`;
-      ctx.shadowColor = 'rgba(16, 185, 129, 0.6)';
+      ctx.shadowColor = 'rgba(198,166,100,0.6)';
       ctx.shadowBlur = 4 * dpr;
-      ctx.fillStyle = `rgba(167, 243, 208, ${g.life * 0.6})`;
+      ctx.fillStyle = `rgba(210,198,178,${g.life * 0.55})`;
       ctx.fillText(g.ch, g.x + 14 * dpr, g.y - 14 * dpr);
       ctx.shadowBlur = 0;
       g.life -= g.decay;
@@ -418,65 +423,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
     requestAnimationFrame(draw);
   }
   if (!prefersReducedMotion) draw();
-})();
-
-/* =========================================================
-   REACT BITS DOCK (Proximity Magnification & Active Scroll)
-   ========================================================= */
-(() => {
-  const panel = document.querySelector('.dock-panel');
-  if (!panel) return;
-  const items = panel.querySelectorAll('.dock-item');
-  const baseSize = 48;
-  const magSize = 68;
-  const distanceThreshold = 160;
-
-  panel.addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX;
-    items.forEach((item) => {
-      const rect = item.getBoundingClientRect();
-      const itemCenterX = rect.left + rect.width / 2;
-      const dist = Math.abs(mouseX - itemCenterX);
-
-      if (dist < distanceThreshold) {
-        const norm = dist / distanceThreshold;
-        const scale = 0.5 * (1 + Math.cos(Math.PI * norm));
-        const targetSize = baseSize + (magSize - baseSize) * scale;
-        item.style.width = `${targetSize}px`;
-        item.style.height = `${targetSize}px`;
-      } else {
-        item.style.width = `${baseSize}px`;
-        item.style.height = `${baseSize}px`;
-      }
-    });
-  });
-
-  panel.addEventListener('mouseleave', () => {
-    items.forEach((item) => {
-      item.style.width = `${baseSize}px`;
-      item.style.height = `${baseSize}px`;
-    });
-  });
-
-  // Active section tracker on scroll
-  const sections = document.querySelectorAll('section[id]');
-  window.addEventListener('scroll', () => {
-    let current = 'top';
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop - 140;
-      if (window.scrollY >= sectionTop) {
-        current = section.getAttribute('id');
-      }
-    });
-    items.forEach((item) => {
-      const href = item.getAttribute('href');
-      if (href === `#${current}`) {
-        item.classList.add('dock-item--active');
-      } else {
-        item.classList.remove('dock-item--active');
-      }
-    });
-  });
 })();
 
 /* =========================================================
@@ -498,12 +444,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   stage.appendChild(renderer.domElement);
 
-  // Lighting — Rich Charcoal & Emerald Amber Theme
-  scene.add(new THREE.AmbientLight(0x0b0f17, 1.8));
-  const key = new THREE.PointLight(0x10b981, 70, 30);
+  // Lighting — Cool Electric Cyber Theme
+  scene.add(new THREE.AmbientLight(0x0f172a, 1.8));
+  const key = new THREE.PointLight(0x38bdf8, 70, 30);
   key.position.set(4, 5, 6);
   scene.add(key);
-  const rim = new THREE.PointLight(0xf59e0b, 40, 30);
+  const rim = new THREE.PointLight(0x0284c7, 40, 30);
   rim.position.set(-5, -3, -4);
   scene.add(rim);
 
@@ -527,12 +473,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const tc = document.createElement('canvas');
     tc.width = size; tc.height = size;
     const tx = tc.getContext('2d');
-    tx.fillStyle = '#141c2b';
+    tx.fillStyle = '#1e293b';
     tx.fillRect(0, 0, size, size);
     for (let i = 0; i < 900; i++) {
       const y = Math.random() * size;
       const shade = 30 + Math.random() * 50;
-      tx.strokeStyle = `rgba(${shade},${shade + 30},${shade + 20},0.12)`;
+      tx.strokeStyle = `rgba(${shade},${shade + 20},${shade + 40},0.12)`;
       tx.lineWidth = 0.6 + Math.random() * 0.8;
       tx.beginPath();
       tx.moveTo(0, y);
@@ -547,21 +493,21 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const metalTexture = makeMetalTexture();
 
   const material = new THREE.MeshStandardMaterial({
-    color: 0x141c2b,
+    color: 0x1e293b,
     metalness: 0.75,
     roughness: 0.3,
     roughnessMap: metalTexture,
     bumpMap: metalTexture,
     bumpScale: 0.015,
-    emissive: 0x059669,
-    emissiveIntensity: 0.3,
+    emissive: 0x0284c7,
+    emissiveIntensity: 0.35,
   });
   const shield = new THREE.Mesh(geometry, material);
   scene.add(shield);
 
   // Outer Cybersecurity Encryption Mesh Barrier (Wireframe Icosahedron)
   const meshGeo = new THREE.IcosahedronGeometry(2.4, 1);
-  const meshMat = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: 0.22 });
+  const meshMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.2 });
   const cyberMesh = new THREE.Mesh(meshGeo, meshMat);
   scene.add(cyberMesh);
 
@@ -578,7 +524,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     pPositions[i + 2] = r * Math.sin(theta) * Math.cos(phi);
   }
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-  const pMat = new THREE.PointsMaterial({ color: 0xf59e0b, size: 0.045, transparent: true, opacity: 0.65 });
+  const pMat = new THREE.PointsMaterial({ color: 0x38bdf8, size: 0.045, transparent: true, opacity: 0.65 });
   const particles = new THREE.Points(pGeo, pMat);
   scene.add(particles);
 
@@ -589,15 +535,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
   c.clearRect(0, 0, 512, 512);
 
   // Draw cyber circuit grid on shield decal
-  c.strokeStyle = 'rgba(16,185,129,0.25)';
+  c.strokeStyle = 'rgba(56,189,248,0.2)';
   c.lineWidth = 2;
   c.beginPath();
   c.arc(256, 256, 180, 0, Math.PI * 2);
   c.stroke();
 
   // Security Padlock Icon
-  c.fillStyle = '#10B981';
-  c.strokeStyle = '#10B981';
+  c.fillStyle = '#38bdf8';
+  c.strokeStyle = '#38bdf8';
   c.lineWidth = 8;
   // Shackle
   c.beginPath();
@@ -608,7 +554,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   c.roundRect(210, 175, 92, 75, 10);
   c.fill();
   // Keyhole
-  c.fillStyle = '#0B0F17';
+  c.fillStyle = '#0f172a';
   c.beginPath();
   c.arc(256, 205, 10, 0, Math.PI * 2);
   c.fill();
@@ -618,11 +564,11 @@ document.getElementById('year').textContent = new Date().getFullYear();
   c.textBaseline = 'middle';
   c.font = '800 100px "Syne", sans-serif';
 
-  c.fillStyle = 'rgba(16,185,129,0.3)';
+  c.fillStyle = 'rgba(56,189,248,0.3)';
   c.fillText('ASH', 260, 310);
   c.fillStyle = '#F8FAFC';
   c.fillText('ASH', 256, 306);
-  c.strokeStyle = '#10B981';
+  c.strokeStyle = '#38bdf8';
   c.lineWidth = 3;
   c.strokeText('ASH', 256, 306);
 
@@ -700,3 +646,88 @@ document.getElementById('year').textContent = new Date().getFullYear();
     renderer.setSize(w2, h2);
   });
 })();
+
+/* =========================================================
+   DOCK — macOS magnification + active section highlighting
+   ========================================================= */
+(() => {
+  const BASE = 50;
+  const MAG  = 76;
+  const DIST = 140; // px from center of item to start growing
+
+  const panel = document.querySelector('.dock-panel');
+  if (!panel) return;
+  const items = Array.from(panel.querySelectorAll('.dock-item'));
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function updateSizes(mouseX) {
+    items.forEach(item => {
+      const rect = item.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const dist = Math.abs(mouseX - center);
+      const t = clamp(1 - dist / DIST, 0, 1);
+      const size = Math.round(lerp(BASE, MAG, t));
+      item.style.width  = size + 'px';
+      item.style.height = size + 'px';
+    });
+  }
+
+  function resetSizes() {
+    items.forEach(item => {
+      item.style.width  = BASE + 'px';
+      item.style.height = BASE + 'px';
+    });
+  }
+
+  panel.addEventListener('mousemove', e => updateSizes(e.clientX));
+  panel.addEventListener('mouseleave', resetSizes);
+  resetSizes();
+
+  // Active section highlight via IntersectionObserver
+  const sections = document.querySelectorAll('main section[id], section[id]');
+  const sectionMap = {};
+  sections.forEach(s => { sectionMap[s.id] = s; });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.id;
+      items.forEach(item => {
+        const href = item.getAttribute('href');
+        const match = href === '#' + id || (id === 'top' && href === '#top');
+        item.classList.toggle('is-active', match);
+      });
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => observer.observe(s));
+})();
+
+/* =========================================================
+   LANG CHIP TOOLTIP — show description on hover/focus
+   ========================================================= */
+(() => {
+  const tooltip = document.getElementById('lang-tooltip');
+  if (!tooltip) return;
+  const chips = document.querySelectorAll('.lang-chip[data-desc]');
+
+  chips.forEach(chip => {
+    const show = () => {
+      tooltip.textContent = '> ' + chip.dataset.desc;
+      tooltip.style.opacity = '1';
+    };
+    const hide = () => {
+      tooltip.style.opacity = '0';
+      setTimeout(() => { if (tooltip.style.opacity === '0') tooltip.textContent = ''; }, 200);
+    };
+
+    chip.addEventListener('mouseenter', show);
+    chip.addEventListener('focus', show);
+    chip.addEventListener('mouseleave', hide);
+    chip.addEventListener('blur', hide);
+  });
+})();
+

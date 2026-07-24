@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dock.css">
 </head>
 <body>
 
@@ -49,7 +50,7 @@
 
     <div class="hero-content">
       <p class="eyebrow">Portfolio</p>
-      <h1 class="hero-name" id="hero-name"><span id="decrypted-name" data-text="Hi, I'm Ashwin"></span><span class="dot" id="hero-dot" style="opacity:0">.</span></h1>
+      <h1 class="hero-name" id="hero-name"><span id="decrypted-name" data-text="Ashwin"></span><span class="dot" id="hero-dot" style="opacity:0">.</span></h1>
 
       <div class="rolling-text" id="rolling-text" aria-live="polite">
         <span class="rolling-line is-active">Computer Science Student</span>
@@ -137,7 +138,7 @@
         <ul class="about-meta">
           <li><span>Status</span>B.Sc. Computer Science — in progress</li>
           <li><span>Track</span>Cybersecurity Analyst (training)</li>
-          <li><span>Based in</span>Tamil Nadu, India</li>
+          <li><span>Based in</span>Karattanganadu, Dharapuram Road, Tiruppur</li>
         </ul>
       </div>
     </div>
@@ -175,50 +176,65 @@
     <div class="section-head">
       <p class="eyebrow">02 · Skills</p>
       <h2>Skills</h2>
-      <p class="section-note">Three directions I'm actively growing in, plus the languages and tools I already reach for.</p>
+      <p class="section-note">Core areas and the tools I use — hover to learn more.</p>
     </div>
 
-    <div class="skill-categories">
-      <div class="skill-card skill-card--teal">
-        <div class="skill-icon">
-          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M17 24 L22 29 L32 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <!-- SKILL FLIP CARDS: icon front, description back on hover -->
+    <div class="skill-flip-grid">
+
+      <div class="skill-flip-card" tabindex="0" aria-label="Cybersecurity">
+        <div class="skill-flip-inner">
+          <div class="skill-flip-front">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none"><path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" stroke="#06B6D4" stroke-width="2.5" stroke-linejoin="round"/><path d="M17 24 L22 29 L32 18" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sfc-status" style="color:#06B6D4;border-color:rgba(6,182,212,0.35)">Ongoing</span>
+          </div>
+          <div class="skill-flip-back" style="--sfc-accent:#06B6D4">
+            <h4>Cybersecurity</h4>
+            <p>Networking fundamentals, Linux, and the OWASP Top 10 — building toward analyst-level, hands-on skill.</p>
+          </div>
         </div>
-        <span class="skill-status">Ongoing</span>
-        <h3>Cybersecurity</h3>
-        <p>Networking fundamentals, Linux, and the OWASP Top 10 — building toward analyst-level, hands-on skill.</p>
       </div>
 
-      <div class="skill-card skill-card--gold">
-        <div class="skill-icon">
-          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M16 14 L6 24 L16 34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 14 L42 24 L32 34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 8 L20 40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div class="skill-flip-card" tabindex="0" aria-label="Web Development">
+        <div class="skill-flip-inner">
+          <div class="skill-flip-front">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none"><path d="M16 14 L6 24 L16 34" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 14 L42 24 L32 34" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 8 L20 40" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span class="sfc-status" style="color:#818CF8;border-color:rgba(129,140,248,0.35)">Growing</span>
+          </div>
+          <div class="skill-flip-back" style="--sfc-accent:#818CF8">
+            <h4>Web Development</h4>
+            <p>Building and shipping full pages and small tools — the same instincts that make for a better security eye.</p>
+          </div>
         </div>
-        <span class="skill-status">Growing</span>
-        <h3>Web Development</h3>
-        <p>Building and shipping full pages and small tools — the same instincts that make for a better security eye.</p>
       </div>
 
-      <div class="skill-card skill-card--rose">
-        <div class="skill-icon">
-          <svg viewBox="0 0 48 48" width="30" height="30" fill="none"><path d="M24 6 L27 18 L39 21 L27 24 L24 36 L21 24 L9 21 L21 18 Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="38" cy="10" r="2.4" fill="currentColor"/><circle cx="9" cy="37" r="2" fill="currentColor"/></svg>
+      <div class="skill-flip-card" tabindex="0" aria-label="AI Prompt Engineering">
+        <div class="skill-flip-inner">
+          <div class="skill-flip-front">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none"><path d="M24 6 L27 18 L39 21 L27 24 L24 36 L21 24 L9 21 L21 18 Z" stroke="#F472B6" stroke-width="2.2" stroke-linejoin="round"/><circle cx="38" cy="10" r="2.4" fill="#F472B6"/><circle cx="9" cy="37" r="2" fill="#F472B6"/></svg>
+            <span class="sfc-status" style="color:#F472B6;border-color:rgba(244,114,182,0.35)">Exploring</span>
+          </div>
+          <div class="skill-flip-back" style="--sfc-accent:#F472B6">
+            <h4>AI Prompt Engineering</h4>
+            <p>Learning to design and refine prompts — getting precise, reliable output out of AI tools and models.</p>
+          </div>
         </div>
-        <span class="skill-status">Exploring</span>
-        <h3>AI Prompt Engineering</h3>
-        <p>Learning to design and refine prompts — getting precise, reliable output out of AI tools and models.</p>
       </div>
+
     </div>
 
+    <!-- LANGUAGES ROW with coloured symbols only -->
     <div class="lang-row">
       <p class="lang-row-label">Languages &amp; Core Security Tools</p>
       <div class="lang-chips">
-        <div class="lang-chip"><span class="lang-mark">Py</span>Python</div>
-        <div class="lang-chip"><span class="lang-mark">Jv</span>Java</div>
-        <div class="lang-chip"><span class="lang-mark">C++</span>C++</div>
-        <div class="lang-chip"><span class="lang-mark">SQL</span>SQL</div>
-        <div class="lang-chip lang-chip--ongoing"><span class="lang-mark">Lx</span>Linux <em>(ongoing)</em></div>
-        <div class="lang-chip"><span class="lang-mark">Ws</span>Wireshark</div>
-        <div class="lang-chip"><span class="lang-mark">OW</span>OWASP Top 10</div>
-        <div class="lang-chip"><span class="lang-mark">Np</span>Nmap / NetSec</div>
+        <div class="lang-chip" data-desc="General-purpose scripting. Used for automation, parsing and tooling."><span class="lang-mark" style="color:#3B82F6;border-color:rgba(59,130,246,0.4)">Py</span>Python</div>
+        <div class="lang-chip" data-desc="OOP foundation. Used in coursework and algorithm practice."><span class="lang-mark" style="color:#F59E0B;border-color:rgba(245,158,11,0.4)">Jv</span>Java</div>
+        <div class="lang-chip" data-desc="Systems-level language. Used in DSA and low-level practice."><span class="lang-mark" style="color:#A78BFA;border-color:rgba(167,139,250,0.4)">C++</span>C++</div>
+        <div class="lang-chip" data-desc="Database querying. Used in backend and CTF challenges."><span class="lang-mark" style="color:#10B981;border-color:rgba(16,185,129,0.4)">SQL</span>SQL</div>
+        <div class="lang-chip lang-chip--ongoing" data-desc="Active learning — daily CLI use, shell scripting, permissions &amp; processes."><span class="lang-mark" style="color:#F97316;border-color:rgba(249,115,22,0.4)">Lx</span>Linux <em>(ongoing)</em></div>
       </div>
+      <!-- Tooltip for lang chips -->
+      <div class="lang-tooltip" id="lang-tooltip" aria-live="polite"></div>
     </div>
   </section>
 
@@ -268,6 +284,27 @@
           <p class="timeline-desc">Currently pursuing — building a foundation across programming, systems, and networks, with a self-directed focus on cybersecurity.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===================== LOCATION MAP ===================== -->
+  <section id="location" class="section location-section">
+    <div class="section-head">
+      <p class="eyebrow">Where I'm Based</p>
+      <h2>Location</h2>
+      <p class="section-note">Karattanganadu, Dharapuram Road, Tiruppur — Tamil Nadu, India</p>
+    </div>
+    <div class="map-frame">
+      <div class="map-pin-label">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Tiruppur, Tamil Nadu
+      </div>
+      <iframe
+        title="Location map — Tiruppur, Tamil Nadu"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.748!2d77.3411!3d11.1085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba907b1c9c9cc8f%3A0x1d89c5b5e6e0e1a0!2sDharapuram%20Rd%2C%20Tiruppur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000"
+        width="100%" height="380" style="border:0;filter:invert(0.88) hue-rotate(180deg) saturate(0.7) brightness(0.85);"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </section>
 
@@ -326,81 +363,71 @@
         <span class="contact-value">in/ashwin-g</span>
       </a>
     </div>
-
-    <!-- LOCATION MAP CARD -->
-    <div class="map-card">
-      <div class="map-header">
-        <div class="map-title-wrap">
-          <span class="map-ping-dot" aria-hidden="true"></span>
-          <span class="map-location-name">Base Location — Tamil Nadu, India</span>
-        </div>
-        <span class="map-timezone">Local Time: IST (UTC+5:30)</span>
-      </div>
-      <div class="map-frame-wrap">
-        <iframe 
-          title="Location Map"
-          src="https://maps.google.com/maps?q=Coimbatore,Tamil%20Nadu,India&t=&z=10&ie=UTF8&iwloc=&output=embed" 
-          loading="lazy" 
-          aria-label="Map showing Tamil Nadu India location"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </div>
   </section>
 
 </main>
 
-<!-- ===================== DOCK NAVIGATION (React Bits) ===================== -->
-<div class="dock-outer">
-  <div class="dock-panel" role="toolbar" aria-label="Application dock">
-    <a href="#top" class="dock-item" aria-label="Home">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </div>
-      <div class="dock-label">Home</div>
-    </a>
-    <a href="#about" class="dock-item" aria-label="About">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
-      <div class="dock-label">About</div>
-    </a>
-    <a href="#focus" class="dock-item" aria-label="Skills">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div class="dock-label">Skills</div>
-    </a>
-    <a href="#projects" class="dock-item" aria-label="Projects">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div class="dock-label">Projects</div>
-    </a>
-    <a href="#education" class="dock-item" aria-label="Education">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-      </div>
-      <div class="dock-label">Education</div>
-    </a>
-    <a href="#resume" class="dock-item" aria-label="Resume">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      </div>
-      <div class="dock-label">Resume</div>
-    </a>
-    <a href="mailto:ashwin.g7807@gmail.com?subject=Hire%20Inquiry%20-%20Ashwin%20G" class="dock-item dock-item--hire" aria-label="Hire Me">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-      </div>
-      <div class="dock-label">Hire Me</div>
-    </a>
-    <a href="#contact" class="dock-item" aria-label="Contact">
-      <div class="dock-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div class="dock-label">Contact</div>
-    </a>
+<!-- ===================== DOCK ===================== -->
+<div id="dock-root" aria-label="Navigation dock">
+  <div class="dock-outer">
+    <div class="dock-panel" role="toolbar">
+      <a href="#top" class="dock-item is-active" tabindex="0" aria-label="Home">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="dock-label">Home</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#about" class="dock-item" tabindex="0" aria-label="About">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <span class="dock-label">About</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#focus" class="dock-item" tabindex="0" aria-label="Skills">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="dock-label">Skills</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#projects" class="dock-item" tabindex="0" aria-label="Projects">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span class="dock-label">Projects</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#education" class="dock-item" tabindex="0" aria-label="Education">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <span class="dock-label">Education</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#resume" class="dock-item" tabindex="0" aria-label="Resume">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <span class="dock-label">Resume</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#location" class="dock-item" tabindex="0" aria-label="Location">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <span class="dock-label">Location</span>
+        <span class="dock-dot"></span>
+      </a>
+      <a href="#contact" class="dock-item" tabindex="0" aria-label="Contact">
+        <div class="dock-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <span class="dock-label">Contact</span>
+        <span class="dock-dot"></span>
+      </a>
+    </div>
   </div>
 </div>
 
