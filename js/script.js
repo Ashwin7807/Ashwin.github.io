@@ -23,8 +23,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const dot = document.getElementById('hero-dot');
   if (!container) return;
 
-  const text = container.dataset.text || 'Hi,I'm Ashwin';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>;
+  const text = container.dataset.text || 'Ashwin';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+{}[]<>';
   const delayStart = prefersReducedMotion ? 100 : 2200;
 
   function getRandomChar() {
@@ -55,8 +55,8 @@ document.getElementById('year').textContent = new Date().getFullYear();
   setTimeout(() => {
     let revealedCount = 0;
     let scrambleFrame = 0;
-    const framesPerLetter = 03; // 10 frames of scrambling per character (slow, clear reveal)
-    const intervalMs = 30; // 60ms between frames
+    const framesPerLetter = 10; // 10 frames of scrambling per character (slow, clear reveal)
+    const intervalMs = 60; // 60ms between frames
 
     const interval = setInterval(() => {
       if (revealedCount >= text.length) {
